@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+    <monitoring>
+        <statistics>
+            <cronExpression>*/1 * * * * ?</cronExpression>
+        </statistics>
+    </monitoring>
+    <cryptography>
+        <cipher>
+            <algorithm>AES</algorithm>
+            <password>1qaz2wsx3edc4rfv</password>
+        </cipher>
+    </cryptography>
+    <exceptionResolver>
+        <enforceHttpStatus200>false</enforceHttpStatus200>
+    </exceptionResolver>
+</configuration>

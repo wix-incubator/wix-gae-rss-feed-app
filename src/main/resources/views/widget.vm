@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>$appInstance.getTitle() Widget</title>
+    <link href="http://current.bootstrapcdn.com/bootstrap-v204/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://current.bootstrapcdn.com/bootstrap-v204/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <script type="text/javascript" src="http://static.wix.com/services/js-sdk/1.0.0/js/Wix.js"></script>
+</head>
+
+<body onload="Wix.reportHeightChange($appInstance.getHeight())">
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="hero-unit" style="background-color:$appInstance.getColor();">
+            <h2>$appInstance.getTitle()</h2>
+            <h3>Widget</h3>
+        </div>
+    </div>
+
+    <div class="container-fluid thumbnail"
+         style="margin-bottom:20px; padding:20px; box-shadow:#ccc 0 0 15px $appInstance.getColor()">
+        <div class="span4">
+            <h6>Instance Parameters</h6>
+            <hr/>
+            <div class="row-fluid">
+                <div class="pull-left">instanceId</div>
+                <div class="pull-right">$appInstance.getInstanceId()</div>
+            </div>
+            <div class="row-fluid">
+                <div class="pull-left">signDate</div>
+                <div class="pull-right">$appInstance.getSignDate()</div>
+            </div>
+            <div class="row-fluid">
+                <div class="pull-left">uid</div>
+                <div class="pull-right">$appInstance.getUid()</div>
+            </div>
+            <div class="row-fluid">
+                <div class="pull-left">permissions</div>
+                <div class="pull-right">$appInstance.getPermissions()</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

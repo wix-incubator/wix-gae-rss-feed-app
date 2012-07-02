@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>App-Stub Settings</title>
+    <link href="http://current.bootstrapcdn.com/bootstrap-v204/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://current.bootstrapcdn.com/bootstrap-v204/css/bootstrap-responsive.min.css" rel="stylesheet">
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://current.bootstrapcdn.com/bootstrap-v204/js/bootstrap.js"></script>
+    <script type="text/javascript" src="http://static.wix.com/services/js-sdk/1.0.0/js/Wix.js"></script>
+</head>
+
+<body onload="setColorCheckedValue('$appInstance.getColor()')">
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="hero-unit">
+            <h2>$appInstance.getTitle()</h2>
+            <h3>Settings</h3>
+        </div>
+    </div>
+
+    <div class="container-fluid thumbnail" style="margin-bottom:20px; padding:20px; box-shadow:#ccc 0 0 15px">
+        <div class="row-fluid">
+            <div class="span12">
+                <h6>Options</h6>
+                <hr/>
+                <div class="row-fluid">
+                    <label class="pull-left" for="title">Title</label>
+                    <input class="pull-right" maxlength="20" name="titleText" id="title" size="10" type="text"
+                           value="$appInstance.getTitle()"/>
+                </div>
+                <div class="row-fluid">
+                    <label class="pull-left" for="height">Height</label>
+                    <input class="pull-right" maxlength="4" name="heightText" id="height" size="10" type="text"
+                           value="$appInstance.getHeight()"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span12">
+                <h6>What color do you prefer?</h6>
+                <hr/>
+                <form class="well" name="form1">
+                    <div class="btn-group" data-toggle-name="is_private" data-toggle="buttons-radio" id="colors">
+                        <button type="button" id="LightGreen" value="LightGreen" class="btn" data-toggle="button">LightGreen</button>
+                        <button type="button" id="HotPink" value="HotPink" class="btn" data-toggle="button">HotPink</button>
+                        <button type="button" id="Khaki" value="Khaki" class="btn" data-toggle="button">Khaki</button>
+                        <input type="hidden" name="is_private" value="$appInstance.getColor()"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span12">
+                <h6>Instance Parameters</h6>
+                <hr/>
+                <div class="row-fluid">
+                    <div class="pull-left">instanceId</div>
+                    <div class="pull-right">$appInstance.getInstanceId()</div>
+                </div>
+                <div class="row-fluid">
+                    <div class="pull-left">signDate</div>
+                    <div class="pull-right">$appInstance.getSignDate()</div>
+                </div>
+                <div class="row-fluid">
+                    <div class="pull-left">uid</div>
+                    <div class="pull-right">$appInstance.getUid()</div>
+                </div>
+                <div class="row-fluid">
+                    <div class="pull-left">permissions</div>
+                    <div class="pull-right">$appInstance.getPermissions()</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <hr/>
+            <div id="saveAlert" class="alert alert-success hide fade in" data-alert="alert">
+                <a class="close" href="#">×</a>
+                <strong>Changes saved successfully!</strong>
+            </div>
+        </div>
+
+    </div>
+
+    <button class="btn pull-right" name="refreshComp" onclick="saveChanges(document.getElementById('height').value, document.getElementById('title').value, getColorCheckedValue())">Save Changes</button>
+
+</div>
+
+<script type="text/javascript">
+    function saveChanges(height, title, color) {
+        updateApp(color, title);
+        $("#saveAlert").show();
+        setTimeout( function() {
+            Wix.refreshApp();
+        }, 2000)
+    }
+
+    function updateApp(color, title) {
+
+        var controllerUrl = "#springUrl("/test-app/settingsupdate")";
+        var fullUrl = controllerUrl + "?instanceId=$appInstance.getInstanceId()&color=" + color + "&title=" + title;
+
+        $.ajax({
+          url: fullUrl
+        });
+    }
+
+    function setColorCheckedValue(chosen) {
+        if (chosen == "" || chosen == "white") {
+            chosen = "LightGreen";
+        }
+
+        $('.btn-group').children('.btn#'+chosen).button('toggle');
+    }
+
+    function getColorCheckedValue() {
+        return $('.btn-group button.active').text();
+    }
+</script>
+
+</body>
+</html>
