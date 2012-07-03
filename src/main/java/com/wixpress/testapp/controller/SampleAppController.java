@@ -31,8 +31,6 @@ public class SampleAppController
 
     protected AuthenticationResolver authenticationResolver = new AuthenticationResolver(new ObjectMapper());
 
-    //// Test ////
-
     @RequestMapping(value = "/widget", method = RequestMethod.GET)
     public String widgetTest(Model model,
                              String instance,
@@ -86,6 +84,8 @@ public class SampleAppController
         return success();
     }
 
+    ///// For Testing purposes only !! /////
+
     @RequestMapping(value = "/widgetstandalone", method = RequestMethod.GET)
     public String widgetStandAlone(Model model,
                                    String instanceId,
@@ -132,7 +132,8 @@ public class SampleAppController
         return "settings";
     }
 
-    //For testing override only!!
+    ///// Defaults Override /////
+
     @RequestMapping(value = "/sampleappupdate", method = RequestMethod.GET)
     @ResponseBody
     public Result<Void> sampleAppUpdate(@RequestParam String applicationID,
@@ -145,7 +146,7 @@ public class SampleAppController
     }
 
 
-    //// Utils ////
+    ///// Utils /////
 
     protected Result<Void> success()
     {
