@@ -10,18 +10,17 @@ import java.util.UUID;
 public class SampleApp {
 
     public final static String EndpointControllerUrl = "/test-app";
+    private final static Integer MAX_NUMBER_OF_INSTANCES = 20;
+
+    // HardCoded defaults for staging environments - can be changed via controller
     private final static String DEFAULT_APPLICATION_ID = "129a90ff-094d-f193-49a0-2da5d7d2209b";
     private final static String DEFAULT_SECRET_ID = "39202616-8cfc-4a28-a8d7-4790d13de94e";
-    private final static Integer MAX_NUMBER_OF_INSTANCES = 20;
 
     private String applicationID;
     private String applicationSecret;
 
-    //Instead of DB..
-//    private List<SampleAppInstance> sampleAppInstanceMap = newArrayList();
-
+    // Instead of DB..
     private LRUCache<UUID, SampleAppInstance> sampleAppInstanceMap = new LRUCache<UUID, SampleAppInstance>(MAX_NUMBER_OF_INSTANCES);
-
 
     public SampleApp() {
         this.applicationID = DEFAULT_APPLICATION_ID;

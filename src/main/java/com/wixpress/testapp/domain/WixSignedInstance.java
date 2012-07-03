@@ -16,6 +16,7 @@ public class WixSignedInstance {
     private UUID uid;
     private String permissions;
 
+    //Empty cont' for the ObjectMapper - don't delete
     public WixSignedInstance(){}
 
     public WixSignedInstance(UUID instanceId, DateTime signDate, UUID uid, String permissions) {

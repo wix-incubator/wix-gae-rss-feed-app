@@ -106,5 +106,4 @@ public class SampleAppInstance {
         this.color = color;
         this.title = title;
     }
-
 }

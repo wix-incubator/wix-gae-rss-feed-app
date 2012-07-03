@@ -22,9 +22,6 @@ import java.io.IOException;
 @Configuration
 public class EmbeddedAppVelocityBeansConfig
 {
-//    @Resource
-//    SimpleMappingExceptionResolver resolver;
-
     @Bean
     public FileResourceLoader fileResourceLoader()
     {
