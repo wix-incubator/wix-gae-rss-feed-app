@@ -4,10 +4,11 @@
     <title>$appInstance.getTitle() Widget</title>
     <link href="http://current.bootstrapcdn.com/bootstrap-v204/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://current.bootstrapcdn.com/bootstrap-v204/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="http://static.wix.com/services/js-sdk/1.6.0/js/Wix.js"></script>
 </head>
 
-<body onload="onLoadWidget()">
+<body>
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="hero-unit" style="background-color:$appInstance.getColor();">
@@ -43,39 +44,71 @@
         </div>
     </div>
 
+    <button class="btn pull-right" id="login">Login</button>
+
 ##    session-details
 
     <div class="container-fluid thumbnail"
          style="margin-bottom:20px; padding:20px; box-shadow:#ccc 0 0 15px $appInstance.getColor()">
-        <div class="span4">
-            <h6>Instance Parameters</h6>
+        <div class="span4" id="smContainer">
+            <h6>Site Memeber Parameters</h6>
             <hr/>
             <div class="row-fluid">
-                <div class="pull-left">instanceId</div>
-                <div class="pull-right">$appInstance.getInstanceId()</div>
+                <div class="pull-left">isLoggedIn</div>
+                <div class="pull-right" id="isLoggedIn"></div>
             </div>
             <div class="row-fluid">
-                <div class="pull-left">signDate</div>
-                <div class="pull-right">$appInstance.getSignDate()</div>
+                <div class="pull-left">collectionId</div>
+                <div class="pull-right" id="collectionId"></div>
             </div>
             <div class="row-fluid">
-                <div class="pull-left">uid</div>
-                <div class="pull-right">$appInstance.getUid()</div>
+                <div class="pull-left">email</div>
+                <div class="pull-right" id="email"></div>
             </div>
             <div class="row-fluid">
-                <div class="pull-left">permissions</div>
-                <div class="pull-right">$appInstance.getPermissions()</div>
+                <div class="pull-left">id</div>
+                <div class="pull-right" id="memberId"></div>
+            </div>
+            <div class="row-fluid">
+                <div class="pull-left">name</div>
+                <div class="pull-right" id="userName"></div>
+            </div>
+            <div class="row-fluid">
+                <div class="pull-left">owner</div>
+                <div class="pull-right" id="owner"></div>
+            </div>
+            <div class="row-fluid">
+                <div class="pull-left">status</div>
+                <div class="pull-right" id="status"></div>
             </div>
         </div>
     </div>
 
     <script type="text/javascript">
-        function onLoadWidget() {
-            Wix.reportHeightChange($appInstance.getHeight());
-            Wix.requestLogin(function (data) {
-                //do something with data
+        $("#login").click(function () {
+            Wix.requestLogin(function (response) {
             });
-        }
+        });
+
+        $(document).ready(function () {
+            Wix.currentMember(function (response) {
+                var smContainer = $("#smContainer");
+
+                if (!response || response == {}) {
+                    smContainer.children().hide();
+                    Wix.reportHeightChange(500);
+                }
+                else {
+                    $("#collectionId").text(response.collectionId);
+                    $("#email").text(response.email);
+                    $("#memberId").text(response.id);
+                    $("#userName").text(response.name);
+                    $("#owner").text(response.owner);
+                    $("#status").text(response.status);
+                    Wix.reportHeightChange(900);
+                }
+            });
+        });
     </script>
 
 </div>
