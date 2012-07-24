@@ -32,11 +32,10 @@ public class SampleAppController
     protected AuthenticationResolver authenticationResolver = new AuthenticationResolver(new ObjectMapper());
 
     @RequestMapping(value = "/widget", method = RequestMethod.GET)
-    public String widgetTest(Model model,
-                             String instance,
-//                             @RequestParam(value = "section-url") String sectionUrl,
-//                             @RequestParam String target,
-                             Integer width)
+    public String widget(Model model,
+                         @RequestParam String instance,
+                         @RequestParam(required = false) String target,
+                         @RequestParam Integer width)
     {
         WixSignedInstance wixSignedInstance = authenticationResolver.unsignInstance(sampleApp.getApplicationSecret(), instance);
         SampleAppInstance appInstance = sampleApp.getAppInstance(wixSignedInstance);
@@ -50,12 +49,14 @@ public class SampleAppController
         model.addAttribute("appInstance", appInstance);
 
         return "widget";
+
     }
 
-    @RequestMapping(value = "/settings", method = RequestMethod.GET)
-    public String settingsTest(Model model,
-                               String instance,
-                               Integer width)
+    // Not implemented yet
+//    @RequestMapping(value = "/section", method = RequestMethod.GET)
+    public String section(Model model,
+                          @RequestParam String instance,
+                          @RequestParam(required = false) Integer width)
     {
         WixSignedInstance wixSignedInstance = authenticationResolver.unsignInstance(sampleApp.getApplicationSecret(), instance);
         SampleAppInstance appInstance = sampleApp.getAppInstance(wixSignedInstance);
@@ -71,12 +72,39 @@ public class SampleAppController
         return "settings";
     }
 
+    @RequestMapping(value = "/settings", method = RequestMethod.GET)
+    public String settings(Model model,
+                           @RequestParam String instance,
+                           @RequestParam(required = false) Integer width)
+    {
+        WixSignedInstance wixSignedInstance = authenticationResolver.unsignInstance(sampleApp.getApplicationSecret(), instance);
+        SampleAppInstance appInstance = sampleApp.getAppInstance(wixSignedInstance);
+
+        if(appInstance == null) //new Instance created
+        {
+            appInstance = sampleApp.addAppInstance(wixSignedInstance);
+        }
+
+        appInstance.setWidth(width);
+        model.addAttribute("appInstance", appInstance);
+
+        return "settings";
+    }
+
+
+    ///// Update Controller /////
+
+    //TODO - add security verification
     @RequestMapping(value = "/settingsupdate", method = RequestMethod.GET)
     @ResponseBody
     public Result<Void> widgetUpdate(@RequestParam(required = false) String instanceId,
                                      @RequestParam(required = false) String color,
                                      @RequestParam(required = false) String title)
     {
+        if("".equals(instanceId) || instanceId == null)
+        {
+
+        }
         SampleAppInstance appInstance = sampleApp.getAppInstance(UUID.fromString(instanceId));
 
         appInstance.update(color, title);
@@ -152,5 +180,4 @@ public class SampleAppController
     {
         return new Result<Void>();
     }
-
 }
