@@ -93,7 +93,7 @@
             Wix.currentMember(function (response) {
                 var smContainer = $("#smContainer");
 
-                if (!response || response == {}) {
+                if (!response || response == {} || response == undefined) {
                     smContainer.children().hide();
                     Wix.reportHeightChange(500);
                 }

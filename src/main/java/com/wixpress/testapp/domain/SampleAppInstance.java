@@ -12,7 +12,7 @@ import java.util.UUID;
 public class SampleAppInstance {
 
     private String title = "My App";
-    private String color = "white";
+    private String color = "lavender";
     private Integer height = 500;
 
     private Integer width = 500;
