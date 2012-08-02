@@ -93,11 +93,11 @@
             Wix.currentMember(function (response) {
                 var smContainer = $("#smContainer");
 
-                if (!response || response == {} || response == undefined) {
+                if (!response || response == {} || response == undefined ||
+                        response.code == "API_NOT_LOADED" || response.code == "TOKEN_IS_INVALID") {
                     smContainer.children().hide();
                     Wix.reportHeightChange(500);
-                }
-                else {
+                } else {
                     $("#collectionId").text(response.collectionId);
                     $("#email").text(response.email);
                     $("#memberId").text(response.id);
