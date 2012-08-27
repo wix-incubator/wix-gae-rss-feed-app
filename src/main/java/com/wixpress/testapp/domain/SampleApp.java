@@ -7,20 +7,19 @@ import java.util.UUID;
  * Since: 7/1/12
  */
 
-public class SampleApp {
+public abstract class SampleApp {
 
     public final static String EndpointControllerUrl = "/test-app";
-    private final static Integer MAX_NUMBER_OF_INSTANCES = 20;
 
     // HardCoded defaults for staging environments - can be changed via controller
-    private final static String DEFAULT_APPLICATION_ID = "129a90ff-094d-f193-49a0-2da5d7d2209b";
-    private final static String DEFAULT_SECRET_ID = "39202616-8cfc-4a28-a8d7-4790d13de94e";
+    protected final static String DEFAULT_APPLICATION_ID = "129a90ff-094d-f193-49a0-2da5d7d2209b";
+    protected final static String DEFAULT_SECRET_ID = "39202616-8cfc-4a28-a8d7-4790d13de94e";
 
-    private String applicationID;
-    private String applicationSecret;
+    protected final static String SAMPLE_APP_INSTANCE = "SampleAppInstance";
+    protected final static String BAGGAGE = "baggage";
 
-    // Instead of DB..
-    private LRUCache<UUID, SampleAppInstance> sampleAppInstanceMap = new LRUCache<UUID, SampleAppInstance>(MAX_NUMBER_OF_INSTANCES);
+    protected String applicationID;
+    protected String applicationSecret;
 
     public SampleApp() {
         this.applicationID = DEFAULT_APPLICATION_ID;
@@ -32,26 +31,16 @@ public class SampleApp {
         this.applicationSecret = applicationSecret;
     }
 
-    public void addAppInstance(SampleAppInstance sampleAppInstance) {
-        sampleAppInstanceMap.put(sampleAppInstance.getInstanceId(), sampleAppInstance);
-    }
+    public abstract SampleAppInstance addAppInstance(SampleAppInstance sampleAppInstance);
 
-    public SampleAppInstance addAppInstance(WixSignedInstance wixSignedInstance) {
-        SampleAppInstance sampleAppInstance = new SampleAppInstance(wixSignedInstance);
-        sampleAppInstanceMap.put(sampleAppInstance.getInstanceId(), sampleAppInstance);
-        return sampleAppInstance;
-    }
+    public abstract SampleAppInstance addAppInstance(WixSignedInstance wixSignedInstance);
 
-    public SampleAppInstance getAppInstance(WixSignedInstance wixSignedInstance) {
-        return getAppInstance(wixSignedInstance.getInstanceId());
-    }
+    public abstract SampleAppInstance getAppInstance(UUID instanceId);
 
-    public SampleAppInstance getAppInstance(UUID instanceId) {
-        if(instanceId == null)
-            return null;
-        else
-            return sampleAppInstanceMap.get(instanceId);
-    }
+    public abstract SampleAppInstance getAppInstance(WixSignedInstance wixSignedInstance);
+
+    public abstract void update(SampleAppInstance appInstance);
+
 
     public String getApplicationID() {
         return applicationID;
@@ -59,10 +48,6 @@ public class SampleApp {
 
     public String getApplicationSecret() {
         return applicationSecret;
-    }
-
-    public LRUCache<UUID, SampleAppInstance> getSampleAppInstanceMap() {
-        return sampleAppInstanceMap;
     }
 
     public void setApplicationID(String applicationID) {

@@ -2,6 +2,8 @@ package com.wixpress.testapp.spring;
 
 import com.wixpress.testapp.controller.SampleAppController;
 import com.wixpress.testapp.domain.SampleApp;
+import com.wixpress.testapp.domain.SampleAppDB;
+import com.wixpress.testapp.domain.SampleAppLRU;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +32,7 @@ public class EmbeddedAppConfig
 
     @Bean
     public SampleApp sampleApp() {
-        return new SampleApp();
+        return new SampleAppDB();
+//        return new SampleAppLRU();
     }
 }

@@ -1,5 +1,6 @@
 package com.wixpress.testapp.domain;
 
+import org.codehaus.jackson.annotate.JsonTypeName;
 import org.joda.time.DateTime;
 
 import java.util.UUID;
@@ -9,6 +10,7 @@ import java.util.UUID;
  * Since: 7/1/12
  */
 
+@JsonTypeName("SampleAppInstance")
 public class SampleAppInstance {
 
     private String title = "My App";
@@ -21,6 +23,8 @@ public class SampleAppInstance {
     private DateTime lastAccessedDate;
     private UUID uid;
     private String permissions = "";
+
+    public SampleAppInstance(){}
 
     public SampleAppInstance(WixSignedInstance wixSignedInstance) {
         this.instanceId = wixSignedInstance.getInstanceId();

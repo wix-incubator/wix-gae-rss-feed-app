@@ -101,13 +101,10 @@ public class SampleAppController
                                      @RequestParam(required = false) String color,
                                      @RequestParam(required = false) String title)
     {
-        if("".equals(instanceId) || instanceId == null)
-        {
-
-        }
         SampleAppInstance appInstance = sampleApp.getAppInstance(UUID.fromString(instanceId));
 
         appInstance.update(color, title);
+        sampleApp.update(appInstance);
 
         return success();
     }
