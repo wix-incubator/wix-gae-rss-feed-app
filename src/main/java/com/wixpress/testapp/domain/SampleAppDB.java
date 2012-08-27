@@ -17,7 +17,16 @@ public class SampleAppDB extends SampleApp {
     public SampleAppInstance addAppInstance(SampleAppInstance sampleAppInstance) {
         Entity entity = new Entity(SAMPLE_APP_INSTANCE, sampleAppInstance.getInstanceId().toString());
         entity.setProperty(BAGGAGE, digester.serializeSampleAppInstance(sampleAppInstance));
-        dataStore.put(entity);
+
+        Transaction transaction = dataStore.beginTransaction();
+        try {
+            dataStore.put(entity);
+            transaction.commit();
+        } finally {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+        }
         return sampleAppInstance;
     }
 
