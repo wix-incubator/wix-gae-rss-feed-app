@@ -10,10 +10,10 @@
     <version>1.0.0-BUILD-SNAPSHOT</version>
 
     <properties>
-        <gae.home>/Users/doron/.m2/repository/com/google/appengine/appengine-java-sdk/1.6.6/appengine-java-sdk-1.6.6</gae.home>
+        <gae.home>/Users/doron/.m2/repository/com/google/appengine/appengine-java-sdk/1.7.0/appengine-java-sdk-1.7.0</gae.home>
         <gaeApplicationName>doronsampleapp</gaeApplicationName>
-        <gaePluginVersion>0.9.0</gaePluginVersion>
-        <gae.version>1.6.6</gae.version>
+        <gaePluginVersion>0.9.4</gaePluginVersion>
+        <gae.version>1.7.0</gae.version>
 
         <!-- Upload to http://test.latest.<applicationName>.appspot.com by default -->
         <gae.application.version>test</gae.application.version>
@@ -47,7 +47,7 @@
             <plugin>
                 <groupId>net.kindleit</groupId>
                 <artifactId>maven-gae-plugin</artifactId>
-                <version>0.9.0</version>
+                <version>0.9.4</version>
                 <configuration>
                     <serverId>appengine.google.com</serverId>
                 </configuration>
@@ -62,8 +62,6 @@
             </plugin>
         </plugins>
     </build>
-
-
 
     <repositories>
         <repository>
@@ -83,11 +81,6 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.1</version>
-        </dependency>
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
@@ -121,7 +114,7 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.6.6</version>
+            <version>1.7.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
