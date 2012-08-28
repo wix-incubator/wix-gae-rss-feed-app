@@ -15,9 +15,13 @@ public class WixSignedInstance {
     private DateTime signDate;
     private UUID uid;
     private String permissions;
+    private String ipAndPort;
+    private String vendorProductId;
+    private Boolean demoMode;
 
     //Empty cont' for the ObjectMapper - don't delete
-    public WixSignedInstance(){}
+    public WixSignedInstance() {
+    }
 
     public WixSignedInstance(UUID instanceId, DateTime signDate, UUID uid, String permissions) {
         this.instanceId = instanceId;
@@ -56,5 +60,29 @@ public class WixSignedInstance {
 
     public void setPermissions(String permissions) {
         this.permissions = permissions;
+    }
+
+    public String getIpAndPort() {
+        return ipAndPort;
+    }
+
+    public void setIpAndPort(String ipAndPort) {
+        this.ipAndPort = ipAndPort;
+    }
+
+    public String getVendorProductId() {
+        return vendorProductId;
+    }
+
+    public void setVendorProductId(String vendorProductId) {
+        this.vendorProductId = vendorProductId;
+    }
+
+    public Boolean getDemoMode() {
+        return demoMode;
+    }
+
+    public void setDemoMode(Boolean demoMode) {
+        this.demoMode = demoMode;
     }
 }
