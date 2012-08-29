@@ -14,6 +14,10 @@ public class SampleAppDB extends SampleApp {
     private SampleAppDigester digester = new SampleAppDigester();
     private DatastoreService dataStore = DatastoreServiceFactory.getDatastoreService();
 
+    public SampleAppDB() {
+        super();
+    }
+
     public SampleAppInstance addAppInstance(SampleAppInstance sampleAppInstance) {
         Entity entity = new Entity(SAMPLE_APP_INSTANCE, sampleAppInstance.getInstanceId().toString());
         entity.setProperty(BAGGAGE, digester.serializeSampleAppInstance(sampleAppInstance));

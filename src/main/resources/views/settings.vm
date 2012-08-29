@@ -7,7 +7,7 @@
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="http://current.bootstrapcdn.com/bootstrap-v204/js/bootstrap.js"></script>
-    <script type="text/javascript" src="//sslstatic.wix.com/services/js-sdk/1.8.0/js/Wix.js"></script>
+    <script type="text/javascript" src="http://sslstatic.wix.com/services/js-sdk/1.8.0/js/Wix.js"></script>
 </head>
 
 <body onload="setColorCheckedValue('$appInstance.getColor()')">
