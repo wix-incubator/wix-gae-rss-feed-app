@@ -9,8 +9,6 @@ import java.util.UUID;
 
 public abstract class SampleApp {
 
-    public final static String EndpointControllerUrl = "/test-app";
-
     // todo - HardCoded defaults for staging environments - should be changed once you register your application with Wix
     protected final static String DEFAULT_APPLICATION_ID = "129a90ff-094d-f193-49a0-2da5d7d2209b";
     protected final static String DEFAULT_SECRET_ID = "39202616-8cfc-4a28-a8d7-4790d13de94e";
