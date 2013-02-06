@@ -1,15 +1,13 @@
 package com.wixpress.testapp.spring;
 
+import com.wixpress.testapp.controller.HelpController;
 import com.wixpress.testapp.controller.SampleAppController;
 import com.wixpress.testapp.domain.SampleApp;
 import com.wixpress.testapp.domain.SampleAppDB;
-import com.wixpress.testapp.domain.SampleAppLRU;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
-import javax.annotation.Resource;
 
 /**
  * Created by : doron
@@ -28,6 +26,11 @@ public class EmbeddedAppConfig
     @Bean
     public SampleAppController sampleAppController() {
         return new SampleAppController();
+    }
+
+    @Bean
+    public HelpController helloWorldController() {
+        return new HelpController();
     }
 
     @Bean
