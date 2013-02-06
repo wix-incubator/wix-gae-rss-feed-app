@@ -2,29 +2,29 @@
 <html>
 <head>
     <title>Wix GAE Example App - Help</title>
-    <link href="http://current.bootstrapcdn.com/bootstrap-v204/css/bootstrap.min.css" rel="stylesheet">
-    <link href="http://current.bootstrapcdn.com/bootstrap-v204/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet">
 
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="http://current.bootstrapcdn.com/bootstrap-v204/js/bootstrap.js"></script>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="container-fluid thumbnail" style="margin-top:20px; padding:20px; box-shadow:#ccc 0 0 15px">
-    <h1>Wix GAE Example App - Help</h1>
-    <h2>Your App is alive on Google App Engine</h2>
-            <hr/>
-    <p>You can now proceed to code your Wix App Endpoints using Spring MVC controllers and GAE Services</p>
-    <p>Important links:</p>
-    <ul>
-        <li><a href="http://dev.wix.com/">Wix Developers Center</a></li>
-        <li><a href=https://developers.google.com/appengine/>Google App Engine Documentation</a></li>
-        <li><a href=https://appengine.google.com/>Google App Engine Dashboard</a></li>
-        <li><a href=http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/mvc.html>Spring MVC documentation</a></li>
-        <li><a href=http://velocity.apache.org/engine/devel/user-guide.html>Velocity Documentation</a> (the src/main/resources/views/*.vm files)</li>
-        <li><a href=http://twitter.github.com/bootstrap/>Bootstrap</a> (the CSS library used in the example)</li>
-    </ul>
-    (the src/main/java/com/wixpress/testapp/controller/*.java classes))
-            </div>
+<div class="container-fluid">
+    <div class="container-fluid thumbnail" style="margin-top:20px; padding:20px; box-shadow:#ccc 0 0 15px">
+        <h1>Wix GAE Example App - Help</h1>
+        <h2>Your App is alive on Google App Engine</h2>
+        <hr/>
+        <p>You can now proceed to code your Wix App Endpoints using Spring MVC controllers and GAE Services</p>
+        <p>Important links:</p>
+        <ul>
+            <li><a href="http://dev.wix.com/">Wix Developers Center</a></li>
+            <li><a href=https://developers.google.com/appengine/>Google App Engine Documentation</a></li>
+            <li><a href=https://appengine.google.com/>Google App Engine Dashboard</a></li>
+            <li><a href=http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/mvc.html>Spring MVC documentation</a></li>
+            <li><a href=http://velocity.apache.org/engine/devel/user-guide.html>Velocity Documentation</a> (the src/main/resources/views/*.vm files)</li>
+            <li><a href=http://twitter.github.com/bootstrap/>Bootstrap</a> (the CSS library used in the example)</li>
+        </ul>
+    </div>
     <h2>The project structure</h2>
     <pre style="font-family: inconsolata, monospace;" margin>
 src                                  &rarr; The sources folder

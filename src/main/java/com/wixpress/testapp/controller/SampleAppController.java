@@ -52,8 +52,13 @@ public class SampleAppController
                          @RequestParam String compId,
                          @RequestParam String viewMode)
     {
-        WixSignedInstance wixSignedInstance = authenticationResolver.unsignInstance(sampleApp.getApplicationSecret(), instance);
-        return viewWidget(model, sectionUrl, target, width, wixSignedInstance, compId, viewMode);
+        try {
+            WixSignedInstance wixSignedInstance = authenticationResolver.unsignInstance(sampleApp.getApplicationSecret(), instance);
+            return viewWidget(model, sectionUrl, target, width, wixSignedInstance, compId, viewMode);
+        }
+        catch (InvalidSignatureException e) {
+            return "invalid-secret";
+        }
 
     }
 
@@ -75,8 +80,13 @@ public class SampleAppController
                            @RequestParam String origCompId,
                            @RequestParam String compId)
     {
-        WixSignedInstance wixSignedInstance = authenticationResolver.unsignInstance(sampleApp.getApplicationSecret(), instance);
-        return viewSettings(model, width, wixSignedInstance, locale, origCompId, compId);
+        try {
+            WixSignedInstance wixSignedInstance = authenticationResolver.unsignInstance(sampleApp.getApplicationSecret(), instance);
+            return viewSettings(model, width, wixSignedInstance, locale, origCompId, compId);
+        }
+        catch (InvalidSignatureException e) {
+            return "invalid-secret";
+        }
     }
 
     private String viewWidget(Model model, String sectionUrl, String target, Integer width, WixSignedInstance wixSignedInstance, String compId, String viewMode) {

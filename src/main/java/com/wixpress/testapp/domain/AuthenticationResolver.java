@@ -2,7 +2,6 @@ package com.wixpress.testapp.domain;
 
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.util.StringUtils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -92,7 +91,7 @@ public class AuthenticationResolver
 
                 if (!Arrays.equals(mySig, sig))
                 {
-                    throw new AuthenticationResolverMarshallerException("Non-matching signature for request");
+                    throw new InvalidSignatureException("Request signed-instance signature invalid. Are you using the right secret?");
                 } else
                 {
                     return objectMapper.readValue(payload, valueClass);
