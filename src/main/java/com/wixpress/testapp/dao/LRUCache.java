@@ -1,4 +1,4 @@
-package com.wixpress.testapp.domain;
+package com.wixpress.testapp.dao;
 
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;

@@ -1,7 +1,5 @@
 package com.wixpress.testapp.dao;
 
-import com.wixpress.testapp.domain.LRUCache;
-
 import java.util.UUID;
 
 /**
