@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>$appInstance.getTitle() Widget</title>
+    <title>$appSettings.getTitle() Widget</title>
     <link href="http://current.bootstrapcdn.com/bootstrap-v204/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://current.bootstrapcdn.com/bootstrap-v204/css/bootstrap-responsive.min.css" rel="stylesheet">
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script type="text/javascript" src="http://sslstatic.wix.com/services/js-sdk/1.8.0/js/Wix.js"></script>
+    <script type="text/javascript" src="http://sslstatic.wix.com/services/js-sdk/1.16.4/js/Wix.js"></script>
 </head>
 
 <body>
 <div class="container-fluid">
     <div class="row-fluid">
-        <div class="hero-unit" style="background-color:$appInstance.getColor();">
-            <h2>$appInstance.getTitle()</h2>
+        <div class="hero-unit" style="background-color:$appSettings.getColor();">
+            <h2>$appSettings.getTitle()</h2>
 
             <h3>Widget</h3>
         </div>
@@ -21,25 +21,25 @@
 ##    instance-details
 
     <div class="container-fluid thumbnail"
-         style="margin-bottom:20px; padding:20px; box-shadow:#ccc 0 0 15px $appInstance.getColor()">
+         style="margin-bottom:20px; padding:20px; box-shadow:#ccc 0 0 15px $appSettings.getColor()">
         <div class="span4">
             <h6>Instance Parameters</h6>
             <hr/>
             <div class="row-fluid">
                 <div class="pull-left">instanceId</div>
-                <div class="pull-right">$appInstance.getInstanceId()</div>
+                <div class="pull-right">$wixSignedInstance.getInstanceId()</div>
             </div>
             <div class="row-fluid">
                 <div class="pull-left">signDate</div>
-                <div class="pull-right">$appInstance.getSignDate()</div>
+                <div class="pull-right">$wixSignedInstance.getSignDate()</div>
             </div>
             <div class="row-fluid">
                 <div class="pull-left">uid</div>
-                <div class="pull-right">$appInstance.getUid()</div>
+                <div class="pull-right">$wixSignedInstance.getUid()</div>
             </div>
             <div class="row-fluid">
                 <div class="pull-left">permissions</div>
-                <div class="pull-right">$appInstance.getPermissions()</div>
+                <div class="pull-right">$wixSignedInstance.getPermissions()</div>
             </div>
         </div>
     </div>
@@ -47,7 +47,7 @@
 ##    session-details
 
     <div class="container-fluid thumbnail"
-         style="margin-bottom:20px; padding:20px; box-shadow:#ccc 0 0 15px $appInstance.getColor()">
+         style="margin-bottom:20px; padding:20px; box-shadow:#ccc 0 0 15px $appSettings.getColor()">
         <div class="span4" id="smContainer">
             <h6>Site Memeber Parameters</h6>
             <hr/>

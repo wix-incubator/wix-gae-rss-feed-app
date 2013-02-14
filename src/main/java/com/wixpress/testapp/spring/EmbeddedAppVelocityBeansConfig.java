@@ -3,15 +3,12 @@ package com.wixpress.testapp.spring;
 import com.google.common.collect.ImmutableMap;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.ui.velocity.VelocityEngineFactoryBean;
-import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.view.velocity.VelocityConfigurer;
 import org.springframework.web.servlet.view.velocity.VelocityViewResolver;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 
 /**

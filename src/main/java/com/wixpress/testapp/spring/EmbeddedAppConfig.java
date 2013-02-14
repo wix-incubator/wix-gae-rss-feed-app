@@ -2,8 +2,9 @@ package com.wixpress.testapp.spring;
 
 import com.wixpress.testapp.controller.HelpController;
 import com.wixpress.testapp.controller.SampleAppController;
+import com.wixpress.testapp.dao.SampleAppDao;
+import com.wixpress.testapp.dao.SampleAppGaeDao;
 import com.wixpress.testapp.domain.SampleApp;
-import com.wixpress.testapp.domain.SampleAppDB;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +36,11 @@ public class EmbeddedAppConfig
 
     @Bean
     public SampleApp sampleApp() {
-        return new SampleAppDB();
-//        return new SampleAppLRU();
+        return new SampleApp();
+    }
+
+    @Bean
+    public SampleAppDao sampleAppDap() {
+        return new SampleAppGaeDao();
     }
 }

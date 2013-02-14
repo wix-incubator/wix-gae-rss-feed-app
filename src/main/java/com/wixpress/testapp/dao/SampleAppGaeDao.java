@@ -1,6 +1,7 @@
-package com.wixpress.testapp.domain;
+package com.wixpress.testapp.dao;
 
 import com.google.appengine.api.datastore.*;
+import com.wixpress.testapp.domain.SampleAppDigester;
 
 import java.util.UUID;
 
@@ -9,18 +10,21 @@ import java.util.UUID;
  * Since: 8/27/12
  */
 
-public class SampleAppDB extends SampleApp {
+public class SampleAppGaeDao implements SampleAppDao {
+
+    protected final static String SAMPLE_APP_INSTANCE = "AppSettings";
+    protected final static String BAGGAGE = "baggage";
 
     private SampleAppDigester digester = new SampleAppDigester();
     private DatastoreService dataStore = DatastoreServiceFactory.getDatastoreService();
 
-    public SampleAppDB() {
+    public SampleAppGaeDao() {
         super();
     }
 
-    public SampleAppInstance addAppInstance(SampleAppInstance sampleAppInstance) {
-        Entity entity = new Entity(SAMPLE_APP_INSTANCE, sampleAppInstance.getInstanceId().toString());
-        entity.setProperty(BAGGAGE, digester.serializeSampleAppInstance(sampleAppInstance));
+    public AppSettings addAppInstance(AppSettings appSettings, UUID instanceId) {
+        Entity entity = new Entity(SAMPLE_APP_INSTANCE, instanceId.toString());
+        entity.setProperty(BAGGAGE, digester.serializeSampleAppInstance(appSettings));
 
         Transaction transaction = dataStore.beginTransaction();
         try {
@@ -31,14 +35,10 @@ public class SampleAppDB extends SampleApp {
                 transaction.rollback();
             }
         }
-        return sampleAppInstance;
+        return appSettings;
     }
 
-    public SampleAppInstance addAppInstance(WixSignedInstance wixSignedInstance) {
-        return addAppInstance(new SampleAppInstance(wixSignedInstance));
-    }
-
-    public SampleAppInstance getAppInstance(UUID instanceId) {
+    public AppSettings getAppInstance(UUID instanceId) {
         if (instanceId == null)
             return null;
         else {
@@ -53,11 +53,7 @@ public class SampleAppDB extends SampleApp {
         }
     }
 
-    public SampleAppInstance getAppInstance(WixSignedInstance wixSignedInstance) {
-        return getAppInstance(wixSignedInstance.getInstanceId());
-    }
-
-    public void update(SampleAppInstance appInstance) {
-        addAppInstance(appInstance);
+    public void update(AppSettings appSettings, UUID instanceId) {
+        addAppInstance(appSettings, instanceId);
     }
 }

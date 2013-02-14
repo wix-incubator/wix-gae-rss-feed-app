@@ -1,5 +1,7 @@
 package com.wixpress.testapp.controller;
 
+import com.wixpress.testapp.dao.AppSettings;
+import com.wixpress.testapp.dao.SampleAppDao;
 import com.wixpress.testapp.domain.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
@@ -28,6 +30,9 @@ public class SampleAppController
 {
     @Resource
     private SampleApp sampleApp;
+
+    @Resource
+    private SampleAppDao sampleAppDao;
 
     protected AuthenticationResolver authenticationResolver = new AuthenticationResolver(new ObjectMapper());
 
@@ -90,32 +95,36 @@ public class SampleAppController
     }
 
     private String viewWidget(Model model, String sectionUrl, String target, Integer width, WixSignedInstance wixSignedInstance, String compId, String viewMode) {
-        SampleAppInstance appInstance = loadOrCreateAppInstance(wixSignedInstance);
+        AppSettings appSettings = loadOrCreateAppInstance(wixSignedInstance);
 
-        appInstance.setWidth(width);
-        model.addAttribute("appInstance", appInstance);
+        model.addAttribute("wixSignedInstance", wixSignedInstance);
+        model.addAttribute("appSettings", appSettings);
+        model.addAttribute("width", width);
 
         return "widget";
     }
 
     private String viewSettings(Model model, Integer width, WixSignedInstance wixSignedInstance, String locale, String origCompId, String compId) {
-        SampleAppInstance appInstance = loadOrCreateAppInstance(wixSignedInstance);
+        AppSettings appInstance = loadOrCreateAppInstance(wixSignedInstance);
 
-        appInstance.setWidth(width);
-        model.addAttribute("appInstance", appInstance);
+        AppSettings appSettings = loadOrCreateAppInstance(wixSignedInstance);
+
+        model.addAttribute("wixSignedInstance", wixSignedInstance);
+        model.addAttribute("appSettings", appSettings);
+        model.addAttribute("width", width);
 
         return "settings";
     }
 
-    private SampleAppInstance loadOrCreateAppInstance(WixSignedInstance wixSignedInstance) {
-        SampleAppInstance appInstance = sampleApp.getAppInstance(wixSignedInstance);
+    private AppSettings loadOrCreateAppInstance(WixSignedInstance wixSignedInstance) {
+        AppSettings appSettings = sampleAppDao.getAppInstance(wixSignedInstance.getInstanceId());
 
-        if(appInstance == null)
+        if(appSettings == null)
         {
             // new Instance created
-            appInstance = sampleApp.addAppInstance(wixSignedInstance);
+            appSettings = sampleAppDao.addAppInstance(new AppSettings(), wixSignedInstance.getInstanceId());
         }
-        return appInstance;
+        return appSettings;
     }
 
 
@@ -124,16 +133,17 @@ public class SampleAppController
     //TODO - add security verification
     @RequestMapping(value = "/settingsupdate", method = RequestMethod.GET)
     @ResponseBody
-    public Result<Void> widgetUpdate(@RequestParam(required = false) String instanceId,
+    public AjaxResult widgetUpdate(@RequestParam(required = false) String instanceId,
                                      @RequestParam(required = false) String color,
                                      @RequestParam(required = false) String title)
     {
-        SampleAppInstance appInstance = sampleApp.getAppInstance(UUID.fromString(instanceId));
+        UUID instanceIduuid = UUID.fromString(instanceId);
+        AppSettings appSettings = sampleAppDao.getAppInstance(instanceIduuid);
 
-        appInstance.update(color, title);
-        sampleApp.update(appInstance);
+        appSettings.update(color, title);
+        sampleAppDao.update(appSettings, instanceIduuid);
 
-        return success();
+        return AjaxResult.ok();
     }
 
     ///// For Testing purposes only !! /////
@@ -218,20 +228,14 @@ public class SampleAppController
      */
     @RequestMapping(value = "/sampleappupdate", method = RequestMethod.GET)
     @ResponseBody
-    public Result<Void> sampleAppUpdate(@RequestParam String applicationID,
+    public AjaxResult sampleAppUpdate(@RequestParam String applicationID,
                                         @RequestParam String applicationSecret)
     {
         sampleApp.setApplicationID(applicationID);
         sampleApp.setApplicationSecret(applicationSecret);
 
-        return success();
+        return AjaxResult.ok();
     }
 
 
-    ///// Utils /////
-
-    protected Result<Void> success()
-    {
-        return new Result<Void>();
-    }
 }
