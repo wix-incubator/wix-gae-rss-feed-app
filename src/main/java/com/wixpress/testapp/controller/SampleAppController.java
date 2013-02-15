@@ -134,8 +134,8 @@ public class SampleAppController
     @RequestMapping(value = "/settingsupdate", method = RequestMethod.GET)
     @ResponseBody
     public AjaxResult widgetUpdate(@RequestParam(required = false) String instanceId,
-                                     @RequestParam(required = false) String color,
-                                     @RequestParam(required = false) String title)
+                                   @RequestParam(required = false) String color,
+                                   @RequestParam(required = false) String title)
     {
         UUID instanceIduuid = UUID.fromString(instanceId);
         AppSettings appSettings = sampleAppDao.getAppInstance(instanceIduuid);
