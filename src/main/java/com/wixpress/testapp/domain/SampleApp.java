@@ -1,13 +1,13 @@
 package com.wixpress.testapp.domain;
 
 /**
+ * Class to hold the app-secret and app-id
  * Created by : doron
  * Since: 7/1/12
  */
 
 public class SampleApp {
 
-    // todo - HardCoded defaults for staging environments - should be changed once you register your application with Wix
     protected final static String APPLICATION_ID = "12e04a9c-a51b-51d3-ccfd-44030f30f96a";
     protected final static String APPLICATION_SECRET = "7472876f-89eb-4f19-8f64-6f5415db5700";
 
