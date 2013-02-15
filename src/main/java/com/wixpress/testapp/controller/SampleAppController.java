@@ -7,10 +7,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
@@ -26,8 +23,7 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/test-app")
-public class SampleAppController
-{
+public class SampleAppController {
     @Resource
     private SampleApp sampleApp;
 
@@ -55,15 +51,9 @@ public class SampleAppController
                          @RequestParam(required = false) String target,
                          @RequestParam Integer width,
                          @RequestParam String compId,
-                         @RequestParam String viewMode)
-    {
-        try {
-            WixSignedInstance wixSignedInstance = authenticationResolver.unsignInstance(sampleApp.getApplicationSecret(), instance);
-            return viewWidget(model, sectionUrl, target, width, wixSignedInstance, compId, viewMode);
-        }
-        catch (InvalidSignatureException e) {
-            return "invalid-secret";
-        }
+                         @RequestParam String viewMode) {
+        WixSignedInstance wixSignedInstance = authenticationResolver.unsignInstance(sampleApp.getApplicationSecret(), instance);
+        return viewWidget(model, sectionUrl, target, width, wixSignedInstance, compId, viewMode);
 
     }
 
@@ -83,15 +73,9 @@ public class SampleAppController
                            @RequestParam(required = false) Integer width,
                            @RequestParam String locale,
                            @RequestParam String origCompId,
-                           @RequestParam String compId)
-    {
-        try {
-            WixSignedInstance wixSignedInstance = authenticationResolver.unsignInstance(sampleApp.getApplicationSecret(), instance);
-            return viewSettings(model, width, wixSignedInstance, locale, origCompId, compId);
-        }
-        catch (InvalidSignatureException e) {
-            return "invalid-secret";
-        }
+                           @RequestParam String compId) {
+        WixSignedInstance wixSignedInstance = authenticationResolver.unsignInstance(sampleApp.getApplicationSecret(), instance);
+        return viewSettings(model, width, wixSignedInstance, locale, origCompId, compId);
     }
 
     private String viewWidget(Model model, String sectionUrl, String target, Integer width, WixSignedInstance wixSignedInstance, String compId, String viewMode) {
@@ -119,8 +103,7 @@ public class SampleAppController
     private AppSettings loadOrCreateAppInstance(WixSignedInstance wixSignedInstance) {
         AppSettings appSettings = sampleAppDao.getAppInstance(wixSignedInstance.getInstanceId());
 
-        if(appSettings == null)
-        {
+        if(appSettings == null) {
             // new Instance created
             appSettings = sampleAppDao.addAppInstance(new AppSettings(), wixSignedInstance.getInstanceId());
         }
@@ -128,22 +111,30 @@ public class SampleAppController
     }
 
 
-    ///// Update Controller /////
-
-    //TODO - add security verification
+    /**
+     * Saves changes from the settings dialog
+     * @param instanceId - the app instanceId
+     * @param color - the new entered color
+     * @param title - the new entered title
+     * @return AjaxResult written directly to the response stream
+     */
     @RequestMapping(value = "/settingsupdate", method = RequestMethod.GET)
     @ResponseBody
     public AjaxResult widgetUpdate(@RequestParam(required = false) String instanceId,
                                    @RequestParam(required = false) String color,
-                                   @RequestParam(required = false) String title)
-    {
-        UUID instanceIduuid = UUID.fromString(instanceId);
-        AppSettings appSettings = sampleAppDao.getAppInstance(instanceIduuid);
+                                   @RequestParam(required = false) String title) {
+        try {
+            UUID instanceIduuid = UUID.fromString(instanceId);
+            AppSettings appSettings = sampleAppDao.getAppInstance(instanceIduuid);
 
-        appSettings.update(color, title);
-        sampleAppDao.update(appSettings, instanceIduuid);
+            appSettings.update(color, title);
+            sampleAppDao.update(appSettings, instanceIduuid);
 
-        return AjaxResult.ok();
+            return AjaxResult.ok();
+        }
+        catch (Exception e) {
+            return AjaxResult.fail(e);
+        }
     }
 
     ///// For Testing purposes only !! /////
@@ -173,8 +164,7 @@ public class SampleAppController
                                    @RequestParam(required = false, defaultValue = "_self") String target,
                                    @RequestParam(required = false, defaultValue = "200") Integer width,
                                    @RequestParam(required = false, defaultValue = "widgetCompId") String compId,
-                                   @RequestParam(required = false, defaultValue = "site") String viewMode)
-    {
+                                   @RequestParam(required = false, defaultValue = "site") String viewMode) {
         WixSignedInstance wixSignedInstance = createTestSignedInstance(instanceId, userId, permissions);
         return viewWidget(model, sectionUrl, target, width, wixSignedInstance, compId, viewMode);
     }
@@ -197,8 +187,7 @@ public class SampleAppController
                                      @RequestParam(required = false, defaultValue = "400") Integer width,
                                      @RequestParam(required = false, defaultValue = "en") String locale,
                                      @RequestParam(required = false, defaultValue = "widgetCompId") String origCompId,
-                                     @RequestParam(required = false, defaultValue = "sectionCompId") String compId)
-    {
+                                     @RequestParam(required = false, defaultValue = "sectionCompId") String compId) {
         WixSignedInstance wixSignedInstance = createTestSignedInstance(instanceId, userId, permissions);
         return viewSettings(model, width, wixSignedInstance, locale, origCompId, compId);
     }
@@ -224,17 +213,35 @@ public class SampleAppController
      *
      * @param applicationID - the application id
      * @param applicationSecret - the application secret
-     * @return void result indicating success
+     * @return AjaxResult written directly to the response stream
      */
     @RequestMapping(value = "/sampleappupdate", method = RequestMethod.GET)
     @ResponseBody
     public AjaxResult sampleAppUpdate(@RequestParam String applicationID,
-                                        @RequestParam String applicationSecret)
+                                      @RequestParam String applicationSecret)
     {
         sampleApp.setApplicationID(applicationID);
         sampleApp.setApplicationSecret(applicationSecret);
 
         return AjaxResult.ok();
+    }
+
+    /**
+     * generic Spring MVC error handler
+     * @link http://static.springsource.org/spring/docs/3.2.x/spring-framework-reference/html/mvc.html#mvc-ann-exceptionhandler
+     * @param e - the exception
+     * @param model - model to use for views
+     * @return a view name
+     */
+    @ExceptionHandler(Exception.class)
+    public String exceptionHandler(Exception e, Model model) {
+        if (e instanceof InvalidSignatureException) {
+            return "invalid-secret";
+        }
+        else {
+            model.addAttribute("exception", e);
+            return "errorView";
+        }
     }
 
 
