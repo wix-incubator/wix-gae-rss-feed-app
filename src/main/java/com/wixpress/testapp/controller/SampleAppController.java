@@ -89,8 +89,6 @@ public class SampleAppController {
     }
 
     private String viewSettings(Model model, Integer width, WixSignedInstance wixSignedInstance, String locale, String origCompId, String compId) {
-        AppSettings appInstance = loadOrCreateAppInstance(wixSignedInstance);
-
         AppSettings appSettings = loadOrCreateAppInstance(wixSignedInstance);
 
         model.addAttribute("wixSignedInstance", wixSignedInstance);
@@ -100,12 +98,18 @@ public class SampleAppController {
         return "settings";
     }
 
+    /**
+     * the method loads the app settings, or creates a new app settings (new app instance) if the datastore does not
+     * include this instanceId
+     * @param wixSignedInstance - the unmarshaled signed instance
+     * @return loaded or new app settings
+     */
     private AppSettings loadOrCreateAppInstance(WixSignedInstance wixSignedInstance) {
         AppSettings appSettings = sampleAppDao.getAppInstance(wixSignedInstance.getInstanceId());
 
         if(appSettings == null) {
-            // new Instance created
-            appSettings = sampleAppDao.addAppInstance(new AppSettings(), wixSignedInstance.getInstanceId());
+            appSettings = new AppSettings();
+            sampleAppDao.addAppInstance(appSettings, wixSignedInstance.getInstanceId());
         }
         return appSettings;
     }
