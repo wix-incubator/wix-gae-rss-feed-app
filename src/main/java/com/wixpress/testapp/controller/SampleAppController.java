@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 /**
@@ -69,12 +71,14 @@ public class SampleAppController {
      */
     @RequestMapping(value = "/settings", method = RequestMethod.GET)
     public String settings(Model model,
+                           HttpServletResponse response,
                            @RequestParam String instance,
                            @RequestParam(required = false) Integer width,
                            @RequestParam String locale,
                            @RequestParam String origCompId,
                            @RequestParam String compId) {
         WixSignedInstance wixSignedInstance = authenticationResolver.unsignInstance(sampleApp.getApplicationSecret(), instance);
+        response.addCookie(new Cookie("instanceId", wixSignedInstance.getInstanceId().toString()));
         return viewSettings(model, width, wixSignedInstance, locale, origCompId, compId);
     }
 
@@ -117,14 +121,14 @@ public class SampleAppController {
 
     /**
      * Saves changes from the settings dialog
-     * @param instanceId - the app instanceId
+     * @param instanceId - the app instanceId, read from a cookie placed by the settings controller view operations
      * @param color - the new entered color
      * @param title - the new entered title
      * @return AjaxResult written directly to the response stream
      */
     @RequestMapping(value = "/settingsupdate", method = RequestMethod.GET)
     @ResponseBody
-    public AjaxResult widgetUpdate(@RequestParam(required = false) String instanceId,
+    public AjaxResult widgetUpdate(@CookieValue() String instanceId,
                                    @RequestParam(required = false) String color,
                                    @RequestParam(required = false) String title) {
         try {
@@ -187,6 +191,7 @@ public class SampleAppController {
      */
     @RequestMapping(value = "/settingsstandalone", method = RequestMethod.GET)
     public String settingsStandAlone(Model model,
+                                     HttpServletResponse response,
                                      @RequestParam String instanceId,
                                      @RequestParam(required = false) String userId,
                                      @RequestParam(required = false) String permissions,
@@ -195,6 +200,7 @@ public class SampleAppController {
                                      @RequestParam(required = false, defaultValue = "widgetCompId") String origCompId,
                                      @RequestParam(required = false, defaultValue = "sectionCompId") String compId) {
         WixSignedInstance wixSignedInstance = createTestSignedInstance(instanceId, userId, permissions);
+        response.addCookie(new Cookie("instanceId", instanceId));
         return viewSettings(model, width, wixSignedInstance, locale, origCompId, compId);
     }
 

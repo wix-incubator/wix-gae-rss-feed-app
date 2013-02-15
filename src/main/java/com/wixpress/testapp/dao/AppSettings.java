@@ -11,7 +11,7 @@ import org.codehaus.jackson.annotate.JsonTypeName;
 public class AppSettings {
 
     private String title = "My App";
-    private String color = "lavender";
+    private String color = "LightGreen";
 
     public AppSettings() {}
 
