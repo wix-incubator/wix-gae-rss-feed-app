@@ -13,6 +13,14 @@ public class AppSettings {
     private String title = "My App";
     private String color = "lavender";
 
+    public AppSettings() {}
+
+    public AppSettings(String title, String color) {
+
+        this.title = title;
+        this.color = color;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -29,8 +37,4 @@ public class AppSettings {
         this.color = color;
     }
 
-    public void update(String color, String title) {
-        this.color = color;
-        this.title = title;
-    }
 }

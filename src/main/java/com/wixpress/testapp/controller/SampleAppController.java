@@ -127,9 +127,11 @@ public class SampleAppController {
             UUID instanceIduuid = UUID.fromString(instanceId);
             AppSettings appSettings = sampleAppDao.getAppInstance(instanceIduuid);
 
-            appSettings.update(color, title);
-            sampleAppDao.update(appSettings, instanceIduuid);
+            AppSettings newAppSettings = new AppSettings(
+                    (title == null)?appSettings.getTitle():title,
+                    (color == null)?appSettings.getColor():color);
 
+            sampleAppDao.update(newAppSettings, instanceIduuid);
             return AjaxResult.ok();
         }
         catch (Exception e) {
