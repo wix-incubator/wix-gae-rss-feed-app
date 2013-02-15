@@ -82,43 +82,6 @@ public class SampleAppController {
         return viewSettings(model, width, wixSignedInstance, locale, origCompId, compId);
     }
 
-    private String viewWidget(Model model, String sectionUrl, String target, Integer width, WixSignedInstance wixSignedInstance, String compId, String viewMode) {
-        AppSettings appSettings = loadOrCreateAppInstance(wixSignedInstance);
-
-        model.addAttribute("wixSignedInstance", wixSignedInstance);
-        model.addAttribute("appSettings", appSettings);
-        model.addAttribute("width", width);
-
-        return "widget";
-    }
-
-    private String viewSettings(Model model, Integer width, WixSignedInstance wixSignedInstance, String locale, String origCompId, String compId) {
-        AppSettings appSettings = loadOrCreateAppInstance(wixSignedInstance);
-
-        model.addAttribute("wixSignedInstance", wixSignedInstance);
-        model.addAttribute("appSettings", appSettings);
-        model.addAttribute("width", width);
-
-        return "settings";
-    }
-
-    /**
-     * the method loads the app settings, or creates a new app settings (new app instance) if the datastore does not
-     * include this instanceId
-     * @param wixSignedInstance - the unmarshaled signed instance
-     * @return loaded or new app settings
-     */
-    private AppSettings loadOrCreateAppInstance(WixSignedInstance wixSignedInstance) {
-        AppSettings appSettings = sampleAppDao.getAppInstance(wixSignedInstance.getInstanceId());
-
-        if(appSettings == null) {
-            appSettings = new AppSettings();
-            sampleAppDao.addAppInstance(appSettings, wixSignedInstance.getInstanceId());
-        }
-        return appSettings;
-    }
-
-
     /**
      * Saves changes from the settings dialog
      * @param instanceId - the app instanceId, read from a cookie placed by the settings controller view operations
@@ -146,8 +109,6 @@ public class SampleAppController {
             return AjaxResult.fail(e);
         }
     }
-
-    ///// For Testing purposes only !! /////
 
     /**
      * VIEW - Widget Endpoint for testing
@@ -204,17 +165,6 @@ public class SampleAppController {
         return viewSettings(model, width, wixSignedInstance, locale, origCompId, compId);
     }
 
-    private WixSignedInstance createTestSignedInstance(String instanceId, @Nullable String userId, @Nullable String permissions) {
-        try {
-            UUID instanceUuid = UUID.fromString(instanceId);
-            UUID userUuid = null;
-            if (userId != null)
-                userUuid = UUID.fromString(userId);
-            return new WixSignedInstance(instanceUuid, new DateTime(), userUuid, permissions);
-        } catch (Exception ignored) {
-            throw new RuntimeException(String.format("failed parsing instanceId [%s] or userId [%s]. Valid values are GUIDs of the form aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa or nulls (for userId)", instanceId, userId));
-        }
-    }
 
     /**
      * AJAX - operation which allows to change the applicationId and applicationSecret of this app during runtime.
@@ -253,6 +203,54 @@ public class SampleAppController {
         else {
             model.addAttribute("exception", e);
             return "errorView";
+        }
+    }
+
+    private String viewWidget(Model model, String sectionUrl, String target, Integer width, WixSignedInstance wixSignedInstance, String compId, String viewMode) {
+        AppSettings appSettings = loadOrCreateAppInstance(wixSignedInstance);
+
+        model.addAttribute("wixSignedInstance", wixSignedInstance);
+        model.addAttribute("appSettings", appSettings);
+        model.addAttribute("width", width);
+
+        return "widget";
+    }
+
+    private String viewSettings(Model model, Integer width, WixSignedInstance wixSignedInstance, String locale, String origCompId, String compId) {
+        AppSettings appSettings = loadOrCreateAppInstance(wixSignedInstance);
+
+        model.addAttribute("wixSignedInstance", wixSignedInstance);
+        model.addAttribute("appSettings", appSettings);
+        model.addAttribute("width", width);
+
+        return "settings";
+    }
+
+    /**
+     * the method loads the app settings, or creates a new app settings (new app instance) if the datastore does not
+     * include this instanceId
+     * @param wixSignedInstance - the unmarshaled signed instance
+     * @return loaded or new app settings
+     */
+    private AppSettings loadOrCreateAppInstance(WixSignedInstance wixSignedInstance) {
+        AppSettings appSettings = sampleAppDao.getAppInstance(wixSignedInstance.getInstanceId());
+
+        if(appSettings == null) {
+            appSettings = new AppSettings();
+            sampleAppDao.addAppInstance(appSettings, wixSignedInstance.getInstanceId());
+        }
+        return appSettings;
+    }
+
+    private WixSignedInstance createTestSignedInstance(String instanceId, @Nullable String userId, @Nullable String permissions) {
+        try {
+            UUID instanceUuid = UUID.fromString(instanceId);
+            UUID userUuid = null;
+            if (userId != null)
+                userUuid = UUID.fromString(userId);
+            return new WixSignedInstance(instanceUuid, new DateTime(), userUuid, permissions);
+        } catch (Exception ignored) {
+            throw new RuntimeException(String.format("failed parsing instanceId [%s] or userId [%s]. Valid values are GUIDs of the form aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa or nulls (for userId)", instanceId, userId));
         }
     }
 
