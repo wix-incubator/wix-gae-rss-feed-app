@@ -13,7 +13,7 @@
         <!-- todo change to point at your app-engine SDK local installation -->
         <gae.home>c:\work\appengine-java-sdk-1.7.4\</gae.home>
         <!-- todo change to your app-engine application name (as you registered the application with app-engine) -->
-        <gaeApplicationName>wixrssfeedapp</gaeApplicationName>
+        <gaeApplicationName>GAE_APPLICATION_NAME</gaeApplicationName>
         <gaePluginVersion>0.9.4</gaePluginVersion>
         <gae.version>1.7.4</gae.version>
 
@@ -26,8 +26,8 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
             </plugin>
             <plugin>
