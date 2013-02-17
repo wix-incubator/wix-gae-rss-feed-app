@@ -51,7 +51,10 @@ public class SampleAppGaeDao implements SampleAppDao {
             try {
                 final String baggage = dataStore.get(key).getProperty(BAGGAGE).toString();
                 return objectMapper.readValue(baggage, AppSettings.class);
-            } catch (EntityNotFoundException | IOException e) {
+            } catch (EntityNotFoundException e) {
+                // we ignore the setting reading exception and return a new default settings object
+                return new AppSettings();
+            } catch (IOException e) {
                 // we ignore the setting reading exception and return a new default settings object
                 return new AppSettings();
             }

@@ -59,13 +59,13 @@ public class AjaxResult
     }
 
     public static ResponseEntity<AjaxResult> ok() {
-        return new ResponseEntity<>(new AjaxResult(true), HttpStatus.OK);
+        return new ResponseEntity<AjaxResult>(new AjaxResult(true), HttpStatus.OK);
     }
 
     public static ResponseEntity<AjaxResult> internalServerError(Exception e) {
         StringBuilder stackTrace = new StringBuilder();
         renderStackTrace(e, stackTrace);
-        return new ResponseEntity<>(new AjaxResult(false, e.getMessage(), stackTrace.toString()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<AjaxResult>(new AjaxResult(false, e.getMessage(), stackTrace.toString()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     public static void renderStackTrace(Throwable e, StringBuilder stackTrace) {
