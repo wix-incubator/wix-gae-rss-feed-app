@@ -23,7 +23,7 @@ public class SampleAppGaeDao implements SampleAppDao {
     @Resource
     private DatastoreService dataStore;
 
-    public AppSettings addAppInstance(AppSettings appSettings, UUID instanceId, String compId) {
+    public AppSettings saveAppSettings(AppSettings appSettings, UUID instanceId, String compId) {
         Entity entity = new Entity(SAMPLE_APP_INSTANCE, key(instanceId, compId));
         try {
             entity.setProperty(BAGGAGE, objectMapper.writeValueAsString(appSettings));
@@ -43,7 +43,7 @@ public class SampleAppGaeDao implements SampleAppDao {
         return appSettings;
     }
 
-    public @Nullable AppSettings getAppInstance(UUID instanceId, String compId) {
+    public @Nullable AppSettings getAppSettings(UUID instanceId, String compId) {
         if (instanceId == null)
             return null;
         else {
@@ -62,7 +62,7 @@ public class SampleAppGaeDao implements SampleAppDao {
         return String.format("%s.%s", instanceId.toString(), compId);
     }
 
-    public void update(AppSettings appSettings, UUID instanceId, String compId) {
-        addAppInstance(appSettings, instanceId, compId);
+    public void updateAppSettings(AppSettings appSettings, UUID instanceId, String compId) {
+        saveAppSettings(appSettings, instanceId, compId);
     }
 }

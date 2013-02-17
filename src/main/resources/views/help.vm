@@ -30,7 +30,7 @@
 src                                  &rarr; The sources folder
  &#9492; main                              &rarr; Production sources
    &#9492; java                            &rarr; Java production sources
-     &#9492; com.wixpress.app          &rarr; Your code package (can be changed to anything you like)
+     &#9492; com.wixpress.app              &rarr; Your code package (can be changed to anything you like)
        &#9492; controller                  &rarr; Application Controllers
        &#9492; dao                         &rarr; Data Access Objects
        &#9492; domain                      &rarr; Application business layer

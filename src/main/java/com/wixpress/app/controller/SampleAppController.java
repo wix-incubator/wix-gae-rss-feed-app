@@ -99,10 +99,10 @@ public class SampleAppController {
         try {
             UUID instanceIduuid = UUID.fromString(instanceId);
 
-            AppSettings appSettings = sampleAppDao.getAppInstance(instanceIduuid, settingsUpdate.getCompId());
+            AppSettings appSettings = sampleAppDao.getAppSettings(instanceIduuid, settingsUpdate.getCompId());
             AppSettings mergedAppSettings = appSettings.updateFromInput(settingsUpdate.getSettings());
 
-            sampleAppDao.update(mergedAppSettings, instanceIduuid, settingsUpdate.getCompId());
+            sampleAppDao.updateAppSettings(mergedAppSettings, instanceIduuid, settingsUpdate.getCompId());
             return AjaxResult.ok();
         }
         catch (Exception e) {
@@ -168,7 +168,7 @@ public class SampleAppController {
 
     /**
      * AJAX - operation which allows to change the applicationId and applicationSecret of this app during runtime.
-     * It can be used during app development to update the running app applicationId and applicationSecret after
+     * It can be used during app development to updateAppSettings the running app applicationId and applicationSecret after
      * you register your application with Wix.
      *
      * DELETE THIS OPERATION BEFORE SUBMITTING YOUR APPLICATION WITH WIX
@@ -243,11 +243,11 @@ public class SampleAppController {
      * @return loaded or new app settings
      */
     private AppSettings loadOrCreateAppInstance(WixSignedInstance wixSignedInstance, String compId) {
-        AppSettings appSettings = sampleAppDao.getAppInstance(wixSignedInstance.getInstanceId(), compId);
+        AppSettings appSettings = sampleAppDao.getAppSettings(wixSignedInstance.getInstanceId(), compId);
 
         if(appSettings == null) {
             appSettings = new AppSettings();
-            sampleAppDao.addAppInstance(appSettings, wixSignedInstance.getInstanceId(), compId);
+            sampleAppDao.saveAppSettings(appSettings, wixSignedInstance.getInstanceId(), compId);
         }
         return appSettings;
     }

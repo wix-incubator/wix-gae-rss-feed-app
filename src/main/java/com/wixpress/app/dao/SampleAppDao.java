@@ -9,10 +9,10 @@ import java.util.UUID;
 
 public interface SampleAppDao {
 
-    public AppSettings addAppInstance(AppSettings appSettings, UUID instanceId, String compId);
+    public AppSettings saveAppSettings(AppSettings appSettings, UUID instanceId, String compId);
 
-    public AppSettings getAppInstance(UUID instanceId, String compId);
+    public AppSettings getAppSettings(UUID instanceId, String compId);
 
-    public void update(AppSettings appInstance, UUID instanceId, String compId);
+    public void updateAppSettings(AppSettings appInstance, UUID instanceId, String compId);
 
 }
