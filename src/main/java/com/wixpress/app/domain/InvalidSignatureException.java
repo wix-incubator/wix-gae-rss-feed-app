@@ -1,4 +1,4 @@
-package com.wixpress.testapp.domain;
+package com.wixpress.app.domain;
 
 /**
  * Created by : doron

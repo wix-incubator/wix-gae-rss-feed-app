@@ -1,6 +1,6 @@
-package com.wixpress.testapp.domain;
+package com.wixpress.app.domain;
 
-import com.wixpress.testapp.dao.AppSettings;
+import com.wixpress.app.dao.AppSettings;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;

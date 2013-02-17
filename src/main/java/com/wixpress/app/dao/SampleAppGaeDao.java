@@ -1,4 +1,4 @@
-package com.wixpress.testapp.dao;
+package com.wixpress.app.dao;
 
 import com.google.appengine.api.datastore.*;
 import org.codehaus.jackson.map.ObjectMapper;

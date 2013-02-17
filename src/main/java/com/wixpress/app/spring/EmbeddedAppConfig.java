@@ -1,17 +1,16 @@
-package com.wixpress.testapp.spring;
+package com.wixpress.app.spring;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.wixpress.testapp.controller.HelpController;
-import com.wixpress.testapp.controller.SampleAppController;
-import com.wixpress.testapp.dao.SampleAppDao;
-import com.wixpress.testapp.dao.SampleAppGaeDao;
-import com.wixpress.testapp.domain.SampleApp;
+import com.wixpress.app.controller.HelpController;
+import com.wixpress.app.controller.SampleAppController;
+import com.wixpress.app.dao.SampleAppDao;
+import com.wixpress.app.dao.SampleAppGaeDao;
+import com.wixpress.app.domain.SampleApp;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 
 /**
  * Created by : doron

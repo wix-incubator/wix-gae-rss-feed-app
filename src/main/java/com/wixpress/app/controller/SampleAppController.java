@@ -1,8 +1,8 @@
-package com.wixpress.testapp.controller;
+package com.wixpress.app.controller;
 
-import com.wixpress.testapp.dao.AppSettings;
-import com.wixpress.testapp.dao.SampleAppDao;
-import com.wixpress.testapp.domain.*;
+import com.wixpress.app.dao.AppSettings;
+import com.wixpress.app.dao.SampleAppDao;
+import com.wixpress.app.domain.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
@@ -25,7 +25,7 @@ import java.util.UUID;
  */
 
 @Controller
-@RequestMapping("/test-app")
+@RequestMapping("/app")
 public class SampleAppController {
     @Resource
     private SampleApp sampleApp;

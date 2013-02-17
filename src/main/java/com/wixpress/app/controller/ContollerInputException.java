@@ -1,4 +1,4 @@
-package com.wixpress.testapp.controller;
+package com.wixpress.app.controller;
 
 /**
  * @author yoav

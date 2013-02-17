@@ -1,4 +1,4 @@
-package com.wixpress.testapp.domain;
+package com.wixpress.app.domain;
 
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.map.ObjectMapper;

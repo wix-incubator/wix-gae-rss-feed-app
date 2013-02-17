@@ -1,4 +1,4 @@
-package com.wixpress.testapp.dao;
+package com.wixpress.app.dao;
 
 /**
  * @author Yoav

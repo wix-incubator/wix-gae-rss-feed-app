@@ -1,7 +1,6 @@
-package com.wixpress.testapp.controller;
+package com.wixpress.app.controller;
 
 import javax.annotation.Nullable;
-import javax.xml.bind.annotation.*;
 
 /**
  * Created by : doron

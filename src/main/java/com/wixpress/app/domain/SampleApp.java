@@ -1,4 +1,4 @@
-package com.wixpress.testapp.domain;
+package com.wixpress.app.domain;
 
 /**
  * Class to hold the app-secret and app-id

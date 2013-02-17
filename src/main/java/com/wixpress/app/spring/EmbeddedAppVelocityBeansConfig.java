@@ -1,4 +1,4 @@
-package com.wixpress.testapp.spring;
+package com.wixpress.app.spring;
 
 import com.google.common.collect.ImmutableMap;
 import org.apache.velocity.app.VelocityEngine;
