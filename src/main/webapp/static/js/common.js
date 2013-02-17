@@ -1,3 +1,6 @@
+/**
+ * This function init the settings object with default values or with values that were saved in the DB
+ */
 function applySettings() {
     // Colors
     rssModel.settings.textColor = rssModel.settings.textColor ||  "#000000";

@@ -4,7 +4,7 @@
     <title>Widget Settings &bull; Wix</title>
     <link type="text/css" href="/static/wix-ui-lib/stylesheets/css/main.css" rel="stylesheet">
     <link type="text/css" href="/static/wix-ui-lib/stylesheets/css/settings.css" rel="stylesheet">
-    <link type="text/css" href="/static/css/rss_settings.css" rel="stylesheet">
+    <link type="text/css" href="/static/css/rss.settings.css" rel="stylesheet">
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 </head>
 <body>
@@ -40,6 +40,7 @@
         <div class="user hidden">
             <p>
                 You are now connected to feed <a id="feedLink" href="" target="_blank"></a>.<br/>
+                <span class="feed-description"></span><br/>
                 <a class="disconnect-account" id="disconnectAccount">Disconnect Feed</a>
             </p>
         </div>

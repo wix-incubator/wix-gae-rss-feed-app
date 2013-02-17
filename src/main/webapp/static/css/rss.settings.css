@@ -55,6 +55,10 @@ body {
     margin-bottom: 6px;
 }
 
+.user p .feed-description {
+    font-style:italic;
+}
+
 .color-picker-label {
     color: #373737;
     width: 100px;
@@ -89,7 +93,5 @@ body {
 
 .slider {
     margin-top: -6.5px;
-    width: 90px;
-    margin-left: 0;
-    margin-right: 0 !important;
+    margin-left: 7px;
 }

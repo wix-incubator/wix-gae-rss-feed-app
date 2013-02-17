@@ -2,6 +2,7 @@ body, html {
     font-family: sans-serif;
     height: 100%;
     margin: 0;
+    padding: 0;
 }
 
 a {
@@ -25,22 +26,18 @@ a {
 }
 
 .widget-body {
-    padding: 0 0 5px;
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     overflow: hidden;
-    width: 100%;
     height: 100%;
     vertical-align: middle;
-    margin: 1px;
 }
 
 .widget-header {
     overflow: hidden;
     margin-bottom: 10px;
     height: 50px;
-    width: 100%;
 }
 
 .feed-container {

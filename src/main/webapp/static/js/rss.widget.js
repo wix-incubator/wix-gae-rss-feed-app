@@ -1,5 +1,9 @@
+/**
+ * Class containing widget property and functions
+ */
 var _rssWidget = (function() {
 
+    // Property for containing widget elements
     var sp = {
         widgetBody: $('.widget-body'),
         feedElement: $('#feedEntries'),
@@ -8,53 +12,71 @@ var _rssWidget = (function() {
         defaultURL : "http://rss.cnn.com/rss/edition.rss"
     }
 
-    function loadFeed() {
+    /**
+     * Init the widget
+     */
+    function init () {
+        loadFeed();
 
-        google.load("feeds", "1");
+        handleWindowResize();
 
-        function initialize() {
-
-            initFeedUrl();
-
-            // Create a feed instance that will grab Digg's feed.
-            var feed = new google.feeds.Feed(rssModel.settings.feedInputUrl);
-
-            // Set the number of feed entries that will be loaded by this feed
-            feed.setNumEntries(rssModel.settings.numOfEntries);
-
-            // Sets the result format
-            feed.setResultFormat(google.feeds.Feed.JSON_FORMAT);
-
-            feed.load(function(result) {
-                if (!result.error) {
-                    setFeedTitle(result.feed.title);
-                    setFeed(result.feed.entries);
-                }
-            });
-        }
-
-        google.setOnLoadCallback(initialize);
+        applyStyle();
     }
 
+    /**
+     * Load the feed content using google API
+     */
+    function loadFeed() {
+
+        // Init the feed URL
+        initFeedUrl();
+
+        // Create a feed instance that will grab Digg's feed.
+        var feed = new google.feeds.Feed(rssModel.settings.feedInputUrl);
+
+        // Set the number of feed entries that will be loaded by this feed
+        feed.setNumEntries(rssModel.settings.numOfEntries);
+
+        // Sets the result format
+        feed.setResultFormat(google.feeds.Feed.JSON_FORMAT);
+
+        feed.load(function(result) {
+            if (!result.error) {
+                setFeedTitle(result.feed.title);
+                setFeed(result.feed.entries);
+            }
+        });
+    }
+
+    /**
+     * If the feed url is initilized than the user already inserted a url, otherwise a default value will be initialize so feed will
+     * be displayed to website users
+     */
     function initFeedUrl(){
-        // If the feed url is initilized than the user already inserted a url, otherwise a default value will be initilize so feed will
-        // be displayed to website users
         if (!rssModel.settings.feedInputUrl || rssModel.settings.feedInputUrl == "") {
             rssModel.settings.feedInputUrl = sp.defaultURL
         }
     }
 
+    /**
+     * Set the title of the feed in the widget header
+     * @param title
+     */
     function setFeedTitle(title){
         sp.title.html(title);
     }
 
+    /**
+     * Set feed entries
+     * @param entries
+     */
     function setFeed(entries) {
         for (var i=0; i<entries.length; i++) {
             var feedElm = $("#feed");
 
             var data = entries[i];
 
-            // get tempalte
+            // get template
             var feedEntry = feedElm.html();
 
             // compile template
@@ -75,6 +97,12 @@ var _rssWidget = (function() {
         $(".feed:last").css('border-bottom', 'none');
     }
 
+    /**
+     * Convert hex color to rgba color
+     * @param hex
+     * @param opacity
+     * @return rgba color
+     */
     function convertHexToRgba(hex, opacity) {
         hex = hex.replace('#','');
         r = parseInt(hex.substring(0,2), 16);
@@ -85,19 +113,25 @@ var _rssWidget = (function() {
         return result;
     }
 
+    /**
+     * Apply the style of the widget
+     */
     function applyStyle () {
         calcBodyHeight();
         applySettings();
     }
 
+    /**
+     * Apply settings on the widget elements
+     */
     function applySettings() {
         sp.title.css('color', rssModel.settings.titleTextColor);
 
         // Set widget background color - check if transparent is checked
         var widgetBackgroundColor = rssModel.settings.widgetBcgColor;
         if ( rssModel.settings.widgetBcgCB){
-             var opacityVal = rssModel.settings.widgetBcgSlider;
-             widgetBackgroundColor = convertHexToRgba(widgetBackgroundColor, opacityVal);
+            var opacityVal = rssModel.settings.widgetBcgSlider;
+            widgetBackgroundColor = convertHexToRgba(widgetBackgroundColor, opacityVal);
         }
         sp.widgetBody.css('background-color', widgetBackgroundColor);
 
@@ -110,47 +144,46 @@ var _rssWidget = (function() {
         sp.feedElement.css('background-color', feedBackgroundColor);
     }
 
+    /**
+     * Handle window resizing
+     */
     function handleWindowResize() {
         $(window).resize(function (event) {
             calcBodyHeight();
         });
     }
 
+    /**
+     * Recalc the widget body height
+     */
     function calcBodyHeight() {
-       $('.overview').height(($('.widget-body').height() - 60)+'px');
+        $('.overview').height(($('.widget-body').height() - 60)+'px');
     }
 
+    // Public functions
     return {
-        init: loadFeed,
-        applyStyle : applyStyle,
-        sp: sp,
-        bindEvents: handleWindowResize
+        init: init
     }
 
 }());
 
-
+/**
+ * load widget iFrame
+ */
 function loadWidget() {
-    window.rssModel = {};
 
-    // Getting newSettings that was set as parameter in settings.vm
-    // Check that newSettings is initialized with value
-    rssModel.settings = !!newSettings ? newSettings : {};
-
-    applySettings();
-
-    _rssWidget.init();
+    google.load("feeds", "1");
 
     $(document).ready(function() {
-        _rssWidget.bindEvents();
+        window.rssModel = {};
 
-//        // add scrollbar to the feed container
-//        $('.viewport').height($('.widget-body').height() - 50);
-//        _rssWidget.sp.scroll.tinyscrollbar({
-//            axis: 'y'
-//        });
+        // Getting newSettings that was set as parameter in settings.vm
+        // Check that newSettings is initialized with value
+        rssModel.settings = !!newSettings ? newSettings : {};
 
-        _rssWidget.applyStyle();
+        applySettings();
+
+        _rssWidget.init();
     });
 };
 
