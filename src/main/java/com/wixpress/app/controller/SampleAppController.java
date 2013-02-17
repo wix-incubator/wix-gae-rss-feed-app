@@ -20,8 +20,6 @@ import java.util.UUID;
  * The controller of the Wix API sample application.
  * The controller implements the widget and settings endpoints of a Wix application.
  * In addition, it implements two versions of the endpoints for stand-alone testing.
- * Created by : doron
- * Since: 7/1/12
  */
 
 @Controller

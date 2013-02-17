@@ -5,8 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * @author Yoav
- * @since 2/5/13
+ * Controller to show that an app is running
  */
 @Controller
 @RequestMapping(value = "/help")

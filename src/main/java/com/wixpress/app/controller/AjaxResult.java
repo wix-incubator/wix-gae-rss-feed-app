@@ -3,8 +3,7 @@ package com.wixpress.app.controller;
 import javax.annotation.Nullable;
 
 /**
- * Created by : doron
- * Since: 7/1/12
+ * General result object for Ajax operations
  */
 
 public class AjaxResult
