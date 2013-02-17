@@ -8,12 +8,8 @@ import javax.xml.bind.annotation.*;
  * Since: 7/1/12
  */
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "result")
-@SuppressWarnings("unused")
 public class AjaxResult
 {
-    @XmlAttribute
     private boolean isOk;
     private @Nullable String error;
     private @Nullable String stackTrace;

@@ -87,10 +87,6 @@
 <script type="text/javascript">
     function saveChanges(title, color) {
         updateApp(color, title);
-        $("#saveAlert").show();
-        setTimeout( function() {
-            Wix.refreshApp();
-        }, 2000)
     }
 
     function updateApp(color, title) {
@@ -101,7 +97,16 @@
         jQuery.ajax({
             url: fullUrl,
             dataType: "json"
-        });
+        })
+                .done(function() {
+                    $("#saveAlert").show();
+                    setTimeout( function() {
+                        Wix.refreshApp();
+                    }, 2000)
+                })
+                .fail(function(jqXHR, textStatus) {
+                  alert( "Request failed: " + textStatus );
+                });
     }
 
     function setColorCheckedValue(chosen) {
