@@ -3,6 +3,7 @@ package com.wixpress.app.dao;
 import com.google.appengine.api.datastore.*;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.UUID;
@@ -22,8 +23,8 @@ public class SampleAppGaeDao implements SampleAppDao {
     @Resource
     private DatastoreService dataStore;
 
-    public AppSettings addAppInstance(AppSettings appSettings, UUID instanceId) {
-        Entity entity = new Entity(SAMPLE_APP_INSTANCE, instanceId.toString());
+    public AppSettings addAppInstance(AppSettings appSettings, UUID instanceId, String compId) {
+        Entity entity = new Entity(SAMPLE_APP_INSTANCE, key(instanceId, compId));
         try {
             entity.setProperty(BAGGAGE, objectMapper.writeValueAsString(appSettings));
         } catch (IOException e) {
@@ -42,11 +43,11 @@ public class SampleAppGaeDao implements SampleAppDao {
         return appSettings;
     }
 
-    public AppSettings getAppInstance(UUID instanceId) {
+    public @Nullable AppSettings getAppInstance(UUID instanceId, String compId) {
         if (instanceId == null)
             return null;
         else {
-            final Key key = KeyFactory.createKey(SAMPLE_APP_INSTANCE, instanceId.toString());
+            final Key key = KeyFactory.createKey(SAMPLE_APP_INSTANCE, key(instanceId, compId));
             try {
                 final String baggage = dataStore.get(key).getProperty(BAGGAGE).toString();
                 return objectMapper.readValue(baggage, AppSettings.class);
@@ -57,7 +58,11 @@ public class SampleAppGaeDao implements SampleAppDao {
         }
     }
 
-    public void update(AppSettings appSettings, UUID instanceId) {
-        addAppInstance(appSettings, instanceId);
+    public String key(UUID instanceId, String compId) {
+        return String.format("%s.%s", instanceId.toString(), compId);
+    }
+
+    public void update(AppSettings appSettings, UUID instanceId, String compId) {
+        addAppInstance(appSettings, instanceId, compId);
     }
 }

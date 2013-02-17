@@ -4,16 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <!-- todo change the app groupId and artifactId -->
-    <groupId>SampleAppGAE</groupId>
-    <artifactId>SampleAppGAE</artifactId>
+    <groupId>com.wixpress.examples</groupId>
+    <artifactId>wix-rss-feed-app</artifactId>
     <packaging>war</packaging>
-    <version>1.0.0-BUILD-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <properties>
         <!-- todo change to point at your app-engine SDK local installation -->
         <gae.home>c:\work\appengine-java-sdk-1.7.4\</gae.home>
         <!-- todo change to your app-engine application name (as you registered the application with app-engine) -->
-        <gaeApplicationName>testtesttestyoav</gaeApplicationName>
+        <gaeApplicationName>wixrssfeedapp</gaeApplicationName>
         <gaePluginVersion>0.9.4</gaePluginVersion>
         <gae.version>1.7.4</gae.version>
 

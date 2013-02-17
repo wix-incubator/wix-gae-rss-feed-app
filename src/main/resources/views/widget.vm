@@ -1,116 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>$appSettings.getTitle() Widget</title>
-    <link href="http://current.bootstrapcdn.com/bootstrap-v204/css/bootstrap.min.css" rel="stylesheet">
-    <link href="http://current.bootstrapcdn.com/bootstrap-v204/css/bootstrap-responsive.min.css" rel="stylesheet">
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script type="text/javascript" src="http://sslstatic.wix.com/services/js-sdk/1.16.4/js/Wix.js"></script>
+    <link type="text/css" href="/static/css/widget.css" rel="stylesheet">
+    <link type="text/css" href="/static/external_modules/scrollbar/css/jquery.tinyscrollbar.css" rel="stylesheet">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 </head>
-
 <body>
-<div class="container-fluid">
-    <div class="row-fluid">
-        <div class="hero-unit" style="background-color:$appSettings.getColor();">
-            <h2>$appSettings.getTitle()</h2>
 
-            <h3>Widget</h3>
-        </div>
+<div class="widget-body">
+    <div class="widget-header">
+        <div class="main-title" id="feedTitle"></div>
     </div>
-
-##    instance-details
-
-    <div class="container-fluid thumbnail"
-         style="margin-bottom:20px; padding:20px; box-shadow:#ccc 0 0 15px $appSettings.getColor()">
-        <div class="span4">
-            <h6>Instance Parameters</h6>
-            <hr/>
-            <div class="row-fluid">
-                <div class="pull-left">instanceId</div>
-                <div class="pull-right">$wixSignedInstance.getInstanceId()</div>
+##    <div id="scrollbar1">
+##        <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+##        <div class="viewport">
+            <div class="overview">
+                <div class="feed-container" id="feedEntries"></div>
             </div>
-            <div class="row-fluid">
-                <div class="pull-left">signDate</div>
-                <div class="pull-right">$wixSignedInstance.getSignDate()</div>
-            </div>
-            <div class="row-fluid">
-                <div class="pull-left">uid</div>
-                <div class="pull-right">$wixSignedInstance.getUid()</div>
-            </div>
-            <div class="row-fluid">
-                <div class="pull-left">permissions</div>
-                <div class="pull-right">$wixSignedInstance.getPermissions()</div>
-            </div>
-        </div>
-    </div>
-
-##    session-details
-
-    <div class="container-fluid thumbnail"
-         style="margin-bottom:20px; padding:20px; box-shadow:#ccc 0 0 15px $appSettings.getColor()">
-        <div class="span4" id="smContainer">
-            <h6>Site Memeber Parameters</h6>
-            <hr/>
-            <div class="row-fluid">
-                <div class="pull-left">isLoggedIn</div>
-                <div class="pull-right" id="isLoggedIn"></div>
-            </div>
-            <div class="row-fluid">
-                <div class="pull-left">collectionId</div>
-                <div class="pull-right" id="collectionId"></div>
-            </div>
-            <div class="row-fluid">
-                <div class="pull-left">email</div>
-                <div class="pull-right" id="email"></div>
-            </div>
-            <div class="row-fluid">
-                <div class="pull-left">id</div>
-                <div class="pull-right" id="memberId"></div>
-            </div>
-            <div class="row-fluid">
-                <div class="pull-left">name</div>
-                <div class="pull-right" id="userName"></div>
-            </div>
-            <div class="row-fluid">
-                <div class="pull-left">owner</div>
-                <div class="pull-right" id="owner"></div>
-            </div>
-            <div class="row-fluid">
-                <div class="pull-left">status</div>
-                <div class="pull-right" id="status"></div>
-            </div>
-        </div>
-        <button class="btn pull-right" id="login">Login</button>
-    </div>
-
-    <script type="text/javascript">
-        $("#login").click(function () {
-            Wix.requestLogin(function (response) {
-            });
-        });
-
-        $(document).ready(function () {
-            Wix.currentMember(function (response) {
-                var smContainer = $("#smContainer");
-
-                if (!response || response == {} || response == undefined ||
-                        response.code == "API_NOT_LOADED" || response.code == "TOKEN_IS_INVALID") {
-                    smContainer.children().hide();
-                    Wix.reportHeightChange(500);
-                } else {
-                    $("#collectionId").text(response.collectionId);
-                    $("#email").text(response.email);
-                    $("#memberId").text(response.id);
-                    $("#userName").text(response.name);
-                    $("#owner").text(response.owner);
-                    $("#status").text(response.status);
-                    Wix.reportHeightChange(900);
-                }
-            });
-        });
-    </script>
-
+##        </div>
+##    </div>
 </div>
 
+<script id="feed" type="text/x-handlebars-template">
+    <a class="entry-link" href="{{link}}" target="_blank">
+        <div class="feed">
+            <div class="title">{{title}}</div>
+            <div class="content"><p>{{content}}</p></div>
+        </div>
+    </a>
+</script>
+
+<script type="text/javascript">
+    var newSettings = ${settings};
+</script>
+
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script type="text/javascript" src="//sslstatic.wix.com/services/js-sdk/latest/js/Wix.js"></script>
+<script type="text/javascript" src="/static/js/handlebars.js"></script>
+<script type="text/javascript" src="/static/js/common.js"></script>
+<script type="text/javascript" src="/static/external_modules/scrollbar/js/jquery.tinyscrollbar.js"></script>
+<script type="text/javascript" src="/static/js/rss.widget.js"></script>
 </body>
 </html>

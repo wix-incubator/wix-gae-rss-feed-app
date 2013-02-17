@@ -5,6 +5,7 @@ import com.wixpress.app.dao.SampleAppDao;
 import com.wixpress.app.domain.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -30,6 +32,9 @@ public class SampleAppController {
 
     @Resource
     private SampleAppDao sampleAppDao;
+
+    @Resource
+    private ObjectMapper objectMapper;
 
     protected AuthenticationResolver authenticationResolver = new AuthenticationResolver(new ObjectMapper());
 
@@ -52,7 +57,7 @@ public class SampleAppController {
                          @RequestParam(required = false) String target,
                          @RequestParam Integer width,
                          @RequestParam String compId,
-                         @RequestParam String viewMode) {
+                         @RequestParam String viewMode) throws IOException {
         WixSignedInstance wixSignedInstance = authenticationResolver.unsignInstance(sampleApp.getApplicationSecret(), instance);
         return viewWidget(model, sectionUrl, target, width, wixSignedInstance, compId, viewMode);
 
@@ -75,7 +80,7 @@ public class SampleAppController {
                            @RequestParam(required = false) Integer width,
                            @RequestParam String locale,
                            @RequestParam String origCompId,
-                           @RequestParam String compId) {
+                           @RequestParam String compId) throws IOException {
         WixSignedInstance wixSignedInstance = authenticationResolver.unsignInstance(sampleApp.getApplicationSecret(), instance);
         response.addCookie(new Cookie("instanceId", wixSignedInstance.getInstanceId().toString()));
         return viewSettings(model, width, wixSignedInstance, locale, origCompId, compId);
@@ -84,28 +89,24 @@ public class SampleAppController {
     /**
      * Saves changes from the settings dialog
      * @param instanceId - the app instanceId, read from a cookie placed by the settings controller view operations
-     * @param color - the new entered color
-     * @param title - the new entered title
+     * @param settingsUpdate - the new settings selected by the user and the widgetId
      * @return AjaxResult written directly to the response stream
      */
-    @RequestMapping(value = "/settingsupdate", method = RequestMethod.GET)
+    @RequestMapping(value = "/settingsupdate", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxResult widgetUpdate(@CookieValue() String instanceId,
-                                   @RequestParam(required = false) String color,
-                                   @RequestParam(required = false) String title) {
+    public ResponseEntity<AjaxResult> widgetUpdate(@CookieValue() String instanceId,
+                                   @RequestBody SettingsUpdate settingsUpdate) {
         try {
             UUID instanceIduuid = UUID.fromString(instanceId);
-            AppSettings appSettings = sampleAppDao.getAppInstance(instanceIduuid);
 
-            AppSettings newAppSettings = new AppSettings(
-                    (title == null)?appSettings.getTitle():title,
-                    (color == null)?appSettings.getColor():color);
+            AppSettings appSettings = sampleAppDao.getAppInstance(instanceIduuid, settingsUpdate.getCompId());
+            AppSettings mergedAppSettings = appSettings.updateFromInput(settingsUpdate.getSettings());
 
-            sampleAppDao.update(newAppSettings, instanceIduuid);
+            sampleAppDao.update(mergedAppSettings, instanceIduuid, settingsUpdate.getCompId());
             return AjaxResult.ok();
         }
         catch (Exception e) {
-            return AjaxResult.fail(e);
+            return AjaxResult.internalServerError(e);
         }
     }
 
@@ -134,7 +135,7 @@ public class SampleAppController {
                                    @RequestParam(required = false, defaultValue = "_self") String target,
                                    @RequestParam(required = false, defaultValue = "200") Integer width,
                                    @RequestParam(required = false, defaultValue = "widgetCompId") String compId,
-                                   @RequestParam(required = false, defaultValue = "site") String viewMode) {
+                                   @RequestParam(required = false, defaultValue = "site") String viewMode) throws IOException {
         WixSignedInstance wixSignedInstance = createTestSignedInstance(instanceId, userId, permissions);
         return viewWidget(model, sectionUrl, target, width, wixSignedInstance, compId, viewMode);
     }
@@ -158,7 +159,7 @@ public class SampleAppController {
                                      @RequestParam(required = false, defaultValue = "400") Integer width,
                                      @RequestParam(required = false, defaultValue = "en") String locale,
                                      @RequestParam(required = false, defaultValue = "widgetCompId") String origCompId,
-                                     @RequestParam(required = false, defaultValue = "sectionCompId") String compId) {
+                                     @RequestParam(required = false, defaultValue = "sectionCompId") String compId) throws IOException {
         WixSignedInstance wixSignedInstance = createTestSignedInstance(instanceId, userId, permissions);
         response.addCookie(new Cookie("instanceId", instanceId));
         return viewSettings(model, width, wixSignedInstance, locale, origCompId, compId);
@@ -172,14 +173,15 @@ public class SampleAppController {
      *
      * DELETE THIS OPERATION BEFORE SUBMITTING YOUR APPLICATION WITH WIX
      *
+     *
      * @param applicationID - the application id
      * @param applicationSecret - the application secret
      * @return AjaxResult written directly to the response stream
      */
     @RequestMapping(value = "/sampleappupdate", method = RequestMethod.GET)
     @ResponseBody
-    public AjaxResult sampleAppUpdate(@RequestParam String applicationID,
-                                      @RequestParam String applicationSecret)
+    public ResponseEntity<AjaxResult> sampleAppUpdate(@RequestParam String applicationID,
+                                                      @RequestParam String applicationSecret)
     {
         sampleApp.setApplicationID(applicationID);
         sampleApp.setApplicationSecret(applicationSecret);
@@ -218,22 +220,18 @@ public class SampleAppController {
         }
     }
 
-    private String viewWidget(Model model, String sectionUrl, String target, Integer width, WixSignedInstance wixSignedInstance, String compId, String viewMode) {
-        AppSettings appSettings = loadOrCreateAppInstance(wixSignedInstance);
+    private String viewWidget(Model model, String sectionUrl, String target, Integer width, WixSignedInstance wixSignedInstance, String compId, String viewMode) throws IOException {
+        AppSettings appSettings = loadOrCreateAppInstance(wixSignedInstance, compId);
 
-        model.addAttribute("wixSignedInstance", wixSignedInstance);
-        model.addAttribute("appSettings", appSettings);
-        model.addAttribute("width", width);
+        model.addAttribute("settings", objectMapper.writeValueAsString(appSettings));
 
         return "widget";
     }
 
-    private String viewSettings(Model model, Integer width, WixSignedInstance wixSignedInstance, String locale, String origCompId, String compId) {
-        AppSettings appSettings = loadOrCreateAppInstance(wixSignedInstance);
+    private String viewSettings(Model model, Integer width, WixSignedInstance wixSignedInstance, String locale, String origCompId, String compId) throws IOException {
+        AppSettings appSettings = loadOrCreateAppInstance(wixSignedInstance, origCompId);
 
-        model.addAttribute("wixSignedInstance", wixSignedInstance);
-        model.addAttribute("appSettings", appSettings);
-        model.addAttribute("width", width);
+        model.addAttribute("settings", objectMapper.writeValueAsString(appSettings));
 
         return "settings";
     }
@@ -244,12 +242,12 @@ public class SampleAppController {
      * @param wixSignedInstance - the unmarshaled signed instance
      * @return loaded or new app settings
      */
-    private AppSettings loadOrCreateAppInstance(WixSignedInstance wixSignedInstance) {
-        AppSettings appSettings = sampleAppDao.getAppInstance(wixSignedInstance.getInstanceId());
+    private AppSettings loadOrCreateAppInstance(WixSignedInstance wixSignedInstance, String compId) {
+        AppSettings appSettings = sampleAppDao.getAppInstance(wixSignedInstance.getInstanceId(), compId);
 
         if(appSettings == null) {
             appSettings = new AppSettings();
-            sampleAppDao.addAppInstance(appSettings, wixSignedInstance.getInstanceId());
+            sampleAppDao.addAppInstance(appSettings, wixSignedInstance.getInstanceId(), compId);
         }
         return appSettings;
     }

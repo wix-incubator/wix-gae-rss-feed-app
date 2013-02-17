@@ -1,5 +1,8 @@
 package com.wixpress.app.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import javax.annotation.Nullable;
 
 /**
@@ -46,10 +49,6 @@ public class AjaxResult
         this.stackTrace = stackTrace;
     }
 
-    public static AjaxResult ok() {
-        return new AjaxResult(true);
-    }
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -59,10 +58,14 @@ public class AjaxResult
         return sb.toString();
     }
 
-    public static AjaxResult fail(Exception e) {
+    public static ResponseEntity<AjaxResult> ok() {
+        return new ResponseEntity<>(new AjaxResult(true), HttpStatus.OK);
+    }
+
+    public static ResponseEntity<AjaxResult> internalServerError(Exception e) {
         StringBuilder stackTrace = new StringBuilder();
         renderStackTrace(e, stackTrace);
-        return new AjaxResult(false, e.getMessage(), stackTrace.toString());
+        return new ResponseEntity<>(new AjaxResult(false, e.getMessage(), stackTrace.toString()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     public static void renderStackTrace(Throwable e, StringBuilder stackTrace) {
