@@ -1,8 +1,10 @@
 package com.wixpress.testapp.dao;
 
 import com.google.appengine.api.datastore.*;
-import com.wixpress.testapp.domain.SampleAppDigester;
+import org.codehaus.jackson.map.ObjectMapper;
 
+import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -15,16 +17,18 @@ public class SampleAppGaeDao implements SampleAppDao {
     protected final static String SAMPLE_APP_INSTANCE = "AppSettings";
     protected final static String BAGGAGE = "baggage";
 
-    private SampleAppDigester digester = new SampleAppDigester();
-    private DatastoreService dataStore = DatastoreServiceFactory.getDatastoreService();
-
-    public SampleAppGaeDao() {
-        super();
-    }
+    @Resource
+    private ObjectMapper objectMapper;
+    @Resource
+    private DatastoreService dataStore;
 
     public AppSettings addAppInstance(AppSettings appSettings, UUID instanceId) {
         Entity entity = new Entity(SAMPLE_APP_INSTANCE, instanceId.toString());
-        entity.setProperty(BAGGAGE, digester.serializeSampleAppInstance(appSettings));
+        try {
+            entity.setProperty(BAGGAGE, objectMapper.writeValueAsString(appSettings));
+        } catch (IOException e) {
+            throw new SampleAppDaoException("failed to serialize settings", e);
+        }
 
         Transaction transaction = dataStore.beginTransaction();
         try {
@@ -45,10 +49,10 @@ public class SampleAppGaeDao implements SampleAppDao {
             final Key key = KeyFactory.createKey(SAMPLE_APP_INSTANCE, instanceId.toString());
             try {
                 final String baggage = dataStore.get(key).getProperty(BAGGAGE).toString();
-                return digester.deserializeSampleAppInstance(baggage);
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-                return null;
+                return objectMapper.readValue(baggage, AppSettings.class);
+            } catch (EntityNotFoundException | IOException e) {
+                // we ignore the setting reading exception and return a new default settings object
+                return new AppSettings();
             }
         }
     }

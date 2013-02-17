@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
@@ -192,17 +193,30 @@ public class SampleAppController {
      * generic Spring MVC error handler
      * @link http://static.springsource.org/spring/docs/3.2.x/spring-framework-reference/html/mvc.html#mvc-ann-exceptionhandler
      * @param e - the exception
-     * @param model - model to use for views
      * @return a view name
      */
     @ExceptionHandler(Exception.class)
-    public String exceptionHandler(Exception e, Model model) {
+    public ModelAndView exceptionHandler(Exception e) {
         if (e instanceof InvalidSignatureException) {
-            return "invalid-secret";
+            return new ModelAndView("invalid-secret");
         }
         else {
-            model.addAttribute("exception", e);
-            return "errorView";
+            ModelAndView mv = new ModelAndView("error-view");
+            StringBuilder stackTrace = new StringBuilder();
+            renderStackTrace(e, stackTrace);
+            mv.addObject("exceptionMessage", e.getMessage());
+            mv.addObject("exceptionStackTrace", stackTrace.toString());
+            return mv;
+        }
+    }
+
+    public void renderStackTrace(Throwable e, StringBuilder stackTrace) {
+        for (StackTraceElement stackTraceElement: e.getStackTrace()) {
+            stackTrace.append("<div class=\"stack-trace\">").append(stackTraceElement.toString()).append("</div>");
+        }
+        if (e.getCause() != null && e.getCause() != e) {
+            stackTrace.append("<div class=\"caused-by\">").append("caused by ").append(e.getCause().getClass()).append(" - ").append(e.getCause().getMessage()).append("</div>");
+            renderStackTrace(e.getCause(), stackTrace);
         }
     }
 
@@ -249,8 +263,9 @@ public class SampleAppController {
             if (userId != null)
                 userUuid = UUID.fromString(userId);
             return new WixSignedInstance(instanceUuid, new DateTime(), userUuid, permissions);
-        } catch (Exception ignored) {
-            throw new RuntimeException(String.format("failed parsing instanceId [%s] or userId [%s]. Valid values are GUIDs of the form aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa or nulls (for userId)", instanceId, userId));
+        } catch (Exception original) {
+            throw new ContollerInputException("Failed parsing instanceId [%s] or userId [%s].\nValid values are GUIDs of the form [aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa] or nulls (for userId)",
+                    original, instanceId, userId);
         }
     }
 

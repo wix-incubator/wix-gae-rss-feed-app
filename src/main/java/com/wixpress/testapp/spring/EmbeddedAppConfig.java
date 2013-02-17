@@ -1,5 +1,7 @@
 package com.wixpress.testapp.spring;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.wixpress.testapp.controller.HelpController;
 import com.wixpress.testapp.controller.SampleAppController;
 import com.wixpress.testapp.dao.SampleAppDao;
@@ -9,6 +11,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 
 /**
  * Created by : doron
@@ -43,4 +46,10 @@ public class EmbeddedAppConfig
     public SampleAppDao sampleAppDap() {
         return new SampleAppGaeDao();
     }
+
+    @Bean
+    public DatastoreService dataStore() {
+        return DatastoreServiceFactory.getDatastoreService();
+    }
+
 }

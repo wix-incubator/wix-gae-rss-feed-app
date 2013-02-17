@@ -71,7 +71,7 @@ public class AjaxResult
         return new AjaxResult(false, e.getMessage(), stackTrace.toString());
     }
 
-    private static void renderStackTrace(Throwable e, StringBuilder stackTrace) {
+    public static void renderStackTrace(Throwable e, StringBuilder stackTrace) {
         for (StackTraceElement stackTraceElement: e.getStackTrace()) {
             stackTrace.append(stackTraceElement.toString()).append("\n");
         }

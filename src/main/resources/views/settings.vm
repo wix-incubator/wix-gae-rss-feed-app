@@ -98,8 +98,9 @@
         var controllerUrl = "#springUrl("/test-app/settingsupdate")";
         var fullUrl = controllerUrl + "?instanceId=$wixSignedInstance.getInstanceId()&color=" + color + "&title=" + title;
 
-        $.ajax({
-          url: fullUrl
+        jQuery.ajax({
+            url: fullUrl,
+            dataType: "json"
         });
     }
 
