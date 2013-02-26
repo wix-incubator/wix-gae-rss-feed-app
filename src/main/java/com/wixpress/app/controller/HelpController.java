@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Controller to show that an app is running
  */
 @Controller
-@RequestMapping(value = "/help")
+@RequestMapping(value = "/")
 public class HelpController {
 
     @RequestMapping()

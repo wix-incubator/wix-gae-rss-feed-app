@@ -6,7 +6,6 @@ import com.wixpress.app.controller.HelpController;
 import com.wixpress.app.controller.SampleAppController;
 import com.wixpress.app.dao.SampleAppDao;
 import com.wixpress.app.dao.SampleAppGaeDao;
-import com.wixpress.app.domain.SampleApp;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,11 +33,6 @@ public class EmbeddedAppConfig
     @Bean
     public HelpController helloWorldController() {
         return new HelpController();
-    }
-
-    @Bean
-    public SampleApp sampleApp() {
-        return new SampleApp();
     }
 
     @Bean

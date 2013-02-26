@@ -11,7 +11,7 @@
 
     <properties>
         <!-- todo change to point at your app-engine SDK local installation -->
-        <gae.home>c:\work\appengine-java-sdk-1.7.4\</gae.home>
+        <gae.home>C:/Program Files/Google/appengine-java-sdk-1.7.4</gae.home>
         <!-- todo change to your app-engine application name (as you registered the application with app-engine) -->
         <gaeApplicationName>GAE_APPLICATION_NAME</gaeApplicationName>
         <gaePluginVersion>0.9.4</gaePluginVersion>
