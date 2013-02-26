@@ -15,10 +15,10 @@ var sp ={
  * Init the color pickers with a start color, a one that was saved in the DB or a default one
  */
 function initColorPickers() {
-    $('#titleTextColor').ColorPicker({startWithColor : rssModel.settings.titleTextColor});
-    $('#textColor').ColorPicker({startWithColor : rssModel.settings.textColor});
-    $('#widgetBcgColor').ColorPicker({startWithColor : rssModel.settings.widgetBcgColor});
-    $('#feedBcgColor').ColorPicker({startWithColor : rssModel.settings.feedBcgColor});
+    $('#titleTextColor').ColorPicker({startWithColor : rssModel.settings.styling.titleTextColor});
+    $('#textColor').ColorPicker({startWithColor : rssModel.settings.styling.textColor});
+    $('#widgetBcgColor').ColorPicker({startWithColor : rssModel.settings.styling.widgetBcgColor});
+    $('#feedBcgColor').ColorPicker({startWithColor : rssModel.settings.styling.feedBcgColor});
 }
 
 /**
@@ -28,11 +28,11 @@ function initColorPickers() {
 function initSliders() {
     sp.sliders['widgetBcgCB'] = $('#widgetBcgSlider').Slider({
         type: "Value",
-        value: rssModel.settings.widgetBcgSlider
+        value: rssModel.settings.styling.widgetBcgSlider
     });
     sp.sliders['feedBcgCB'] = $('#feedBcgSlider').Slider({
         type: "Value",
-        value: rssModel.settings.feedBcgSlider
+        value: rssModel.settings.styling.feedBcgSlider
     });
 }
 
@@ -41,17 +41,17 @@ function initSliders() {
  * Check or uncheck the checkboxes according to the value was saved in the DB or a default one
  */
 function initCheckboxes() {
-    $('#widgetBcgCB').Checkbox({ checked: rssModel.settings.widgetBcgCB });
+    $('#widgetBcgCB').Checkbox({ checked: rssModel.settings.styling.widgetBcgCB });
 
     // Enable or disable the opacity bar according to the checkbox
-    if (!rssModel.settings.widgetBcgCB) {
+    if (!rssModel.settings.styling.widgetBcgCB) {
         sp.sliders['widgetBcgCB'].data('plugin_Slider').disable();
     }
 
-    $('#feedBcgCB').Checkbox({ checked: rssModel.settings.feedBcgCB });
+    $('#feedBcgCB').Checkbox({ checked: rssModel.settings.styling.feedBcgCB });
 
     // Enable or disable the opacity bar according to the checkbox
-    if (!rssModel.settings.feedBcgCB){
+    if (!rssModel.settings.styling.feedBcgCB){
         sp.sliders['feedBcgCB'].data('plugin_Slider').disable();
     }
 }
@@ -61,7 +61,7 @@ function initCheckboxes() {
  * Init the input  with a start value, a one that was saved in the DB or a default one
  */
 function initInputElms() {
-    sp.numOfEntriesInput.val(rssModel.settings.numOfEntries);
+    sp.numOfEntriesInput.val(rssModel.settings.styling.numOfEntries);
 }
 
 /**
@@ -70,11 +70,11 @@ function initInputElms() {
  */
 function bindEvents () {
     $(document).on('colorChanged', function(ev, data) {
-        updateSettingsProperty(data.type, data.selected_color);
+        updateStylingProperty(data.type, data.selected_color);
     });
 
     $(document).on('slider.change', function(ev, data) {
-        updateSettingsProperty(data.type, data.value);
+        updateStylingProperty(data.type, data.value);
     });
 
     $(document).on('checkbox.change', function(ev, data) {
@@ -84,7 +84,7 @@ function bindEvents () {
             sp.sliders[data.type].data('plugin_Slider').disable();
         }
 
-        updateSettingsProperty(data.type, data.checked);
+        updateStylingProperty(data.type, data.checked);
     });
 
     // user has connected a feed
@@ -110,7 +110,7 @@ function bindEvents () {
     });
 
     sp.numOfEntriesInput.change( function(){
-        updateSettingsProperty(sp.numOfEntriesInput.attr("id"), sp.numOfEntriesInput.val());
+        updateStylingProperty(sp.numOfEntriesInput.attr("id"), sp.numOfEntriesInput.val());
     });
 }
 
@@ -179,9 +179,18 @@ function initPlugins () {
  * @param value - the new value
  */
 function updateSettingsProperty(key, value) {
-    var settings = rssModel.settings;
-    settings[key] = value;
-    updateSettings(settings);
+    rssModel.settings[key] = value;
+    updateSettings(rssModel.settings);
+}
+
+/**
+ * Update a styling property in the settings object and update the settings object in the db by posting an ajax request
+ * @param key - in the settings object
+ * @param value - the new value
+ */
+function updateStylingProperty(key, value) {
+    rssModel.settings.styling[key] = value;
+    updateSettings(rssModel.settings);
 }
 
 /**

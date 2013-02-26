@@ -2,16 +2,16 @@ package com.wixpress.app.controller;
 
 import com.wixpress.app.dao.AppSettings;
 import com.wixpress.app.dao.SampleAppDao;
-import com.wixpress.app.domain.*;
+import com.wixpress.app.domain.AppInstance;
+import com.wixpress.app.domain.AuthenticationResolver;
+import com.wixpress.app.domain.InvalidSignatureException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.joda.time.DateTime;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 /**
- * The controller of the Wix API sample application.
+ * The controller of the Rss Feed application.
  * The controller implements the widget and settings endpoints of a Wix application.
  * In addition, it implements two versions of the endpoints for stand-alone testing.
  */
@@ -27,8 +27,6 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/app")
 public class SampleAppController {
-    @Resource
-    private SampleApp sampleApp;
 
     @Resource
     private SampleAppDao sampleAppDao;
@@ -36,73 +34,56 @@ public class SampleAppController {
     @Resource
     private ObjectMapper objectMapper;
 
-    protected AuthenticationResolver authenticationResolver = new AuthenticationResolver(new ObjectMapper());
+    protected AuthenticationResolver authenticationResolver = new AuthenticationResolver();
 
     /**
      * VIEW - Widget Endpoint
-     * @link http://dev.wix.com/display/wixdevelopersapi/Widget+Endpoint
+     * @link http://dev.wix.com/docs/display/DRAF/App+Endpoints#AppEndpoints-WidgetEndpoint
      * @param model - Spring MVC model used by the view template widget.vm
      * @param instance - The signed instance {@see http://dev.wix.com/display/wixdevelopersapi/The+Signed+Instance}
-     * @param sectionUrl - The base URL of the application section, if present
-     * @param target - The target attribute that must be added to all href anchors within the application frame
-     * @param width - The width of the frame to render in pixels
      * @param compId - The id of the Wix component which is the host of the IFrame
-     * @param viewMode - An indication whether the user is currently in editor / site
      * @return the template widget.vm name
      */
     @RequestMapping(value = "/widget", method = RequestMethod.GET)
     public String widget(Model model,
                          @RequestParam String instance,
-                         @RequestParam(value = "section-url") String sectionUrl,
-                         @RequestParam(required = false) String target,
-                         @RequestParam Integer width,
-                         @RequestParam String compId,
-                         @RequestParam String viewMode) throws IOException {
-        WixSignedInstance wixSignedInstance = authenticationResolver.unsignInstance(sampleApp.getApplicationSecret(), instance);
-        return viewWidget(model, sectionUrl, target, width, wixSignedInstance, compId, viewMode);
-
+                         @RequestParam String compId) throws IOException
+    {
+        AppInstance appInstance = authenticationResolver.unsignInstance(instance);
+        return viewWidget(model, appInstance.getInstanceId().toString(), compId);
     }
 
     /**
-     * VIEW - Setting Endpoint
+     * VIEW - Settings Endpoint
+     * @link http://dev.wix.com/docs/display/DRAF/App+Endpoints#AppEndpoints-SettingsEndpoint
      * @param model - Spring MVC model used by the view template setting.vm
      * @param instance - The signed instance {@see http://dev.wix.com/display/wixdevelopersapi/The+Signed+Instance}
-     * @param width - The width of the frame to render in pixels
-     * @param locale - The language of the Wix editor
      * @param origCompId - The Wix component id of the caller widget/section
-     * @param compId - The id of the Wix component which is the host of the IFrame
      * @return the template setting.vm name
      */
     @RequestMapping(value = "/settings", method = RequestMethod.GET)
     public String settings(Model model,
                            HttpServletResponse response,
                            @RequestParam String instance,
-                           @RequestParam(required = false) Integer width,
-                           @RequestParam String locale,
-                           @RequestParam String origCompId,
-                           @RequestParam String compId) throws IOException {
-        WixSignedInstance wixSignedInstance = authenticationResolver.unsignInstance(sampleApp.getApplicationSecret(), instance);
-        response.addCookie(new Cookie("instanceId", wixSignedInstance.getInstanceId().toString()));
-        return viewSettings(model, width, wixSignedInstance, locale, origCompId, compId);
+                           @RequestParam String origCompId) throws IOException {
+        AppInstance appInstance = authenticationResolver.unsignInstance(instance);
+        response.addCookie(new Cookie("instance", instance));
+        return viewSettings(model, appInstance.getInstanceId().toString(), origCompId);
     }
 
     /**
      * Saves changes from the settings dialog
-     * @param instanceId - the app instanceId, read from a cookie placed by the settings controller view operations
+     * @param instance - the app instance, read from a cookie placed by the settings controller view operations
      * @param settingsUpdate - the new settings selected by the user and the widgetId
      * @return AjaxResult written directly to the response stream
      */
     @RequestMapping(value = "/settingsupdate", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<AjaxResult> widgetUpdate(@CookieValue() String instanceId,
+    public ResponseEntity<AjaxResult> settingsUpdate(@CookieValue() String instance,
                                    @RequestBody SettingsUpdate settingsUpdate) {
         try {
-            UUID instanceIduuid = UUID.fromString(instanceId);
-
-            AppSettings appSettings = sampleAppDao.getAppSettings(instanceIduuid, settingsUpdate.getCompId());
-            AppSettings mergedAppSettings = appSettings.updateFromInput(settingsUpdate.getSettings());
-
-            sampleAppDao.updateAppSettings(mergedAppSettings, instanceIduuid, settingsUpdate.getCompId());
+            AppInstance appInstance = authenticationResolver.unsignInstance(instance);
+            sampleAppDao.updateAppSettings(appInstance.getInstanceId().toString(), settingsUpdate.getCompId(), settingsUpdate.getSettings());
             return AjaxResult.ok();
         }
         catch (Exception e) {
@@ -117,27 +98,16 @@ public class SampleAppController {
      *
      * @param model - model used by the view template widget.vm
      * @param instanceId - the instanceId member of the signed instance
-     * @param userId - the uid member of the signed instance
-     * @param permissions - the permissions member of the signed instance
-     * @param sectionUrl - The base URL of the application section, if present
-     * @param target - The target attribute that must be added to all href anchors within the application frame
-     * @param width - The width of the frame to render in pixels
      * @param compId - The id of the Wix component which is the host of the IFrame
-     * @param viewMode - An indication whether the user is currently in editor / site
      * @return the template widget.vm name
      */
     @RequestMapping(value = "/widgetstandalone", method = RequestMethod.GET)
     public String widgetStandAlone(Model model,
                                    @RequestParam String instanceId,
-                                   @RequestParam(required = false) String userId,
-                                   @RequestParam(required = false) String permissions,
-                                   @RequestParam(value = "section-url", required = false, defaultValue = "/") String sectionUrl,
-                                   @RequestParam(required = false, defaultValue = "_self") String target,
-                                   @RequestParam(required = false, defaultValue = "200") Integer width,
-                                   @RequestParam(required = false, defaultValue = "widgetCompId") String compId,
-                                   @RequestParam(required = false, defaultValue = "site") String viewMode) throws IOException {
-        WixSignedInstance wixSignedInstance = createTestSignedInstance(instanceId, userId, permissions);
-        return viewWidget(model, sectionUrl, target, width, wixSignedInstance, compId, viewMode);
+                                   @RequestParam(required = false, defaultValue = "widgetCompId") String compId) throws IOException
+    {
+        AppInstance appInstance = createTestAppInstance(instanceId);
+        return viewWidget(model, appInstance.getInstanceId().toString(), compId);
     }
 
     /**
@@ -147,46 +117,16 @@ public class SampleAppController {
      *
      * @param model - model used by the view template setting.vm
      * @param instanceId - the instance id member of the signed instance
-     * @param width - the width of the setting IFrame
      * @return the template setting.vm name
      */
     @RequestMapping(value = "/settingsstandalone", method = RequestMethod.GET)
     public String settingsStandAlone(Model model,
                                      HttpServletResponse response,
                                      @RequestParam String instanceId,
-                                     @RequestParam(required = false) String userId,
-                                     @RequestParam(required = false) String permissions,
-                                     @RequestParam(required = false, defaultValue = "400") Integer width,
-                                     @RequestParam(required = false, defaultValue = "en") String locale,
-                                     @RequestParam(required = false, defaultValue = "widgetCompId") String origCompId,
-                                     @RequestParam(required = false, defaultValue = "sectionCompId") String compId) throws IOException {
-        WixSignedInstance wixSignedInstance = createTestSignedInstance(instanceId, userId, permissions);
+                                     @RequestParam(required = false, defaultValue = "widgetCompId") String origCompId) throws IOException {
+        AppInstance appInstance = createTestAppInstance(instanceId);
         response.addCookie(new Cookie("instanceId", instanceId));
-        return viewSettings(model, width, wixSignedInstance, locale, origCompId, compId);
-    }
-
-
-    /**
-     * AJAX - operation which allows to change the applicationId and applicationSecret of this app during runtime.
-     * It can be used during app development to updateAppSettings the running app applicationId and applicationSecret after
-     * you register your application with Wix.
-     *
-     * DELETE THIS OPERATION BEFORE SUBMITTING YOUR APPLICATION WITH WIX
-     *
-     *
-     * @param applicationID - the application id
-     * @param applicationSecret - the application secret
-     * @return AjaxResult written directly to the response stream
-     */
-    @RequestMapping(value = "/sampleappupdate", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<AjaxResult> sampleAppUpdate(@RequestParam String applicationID,
-                                                      @RequestParam String applicationSecret)
-    {
-        sampleApp.setApplicationID(applicationID);
-        sampleApp.setApplicationSecret(applicationSecret);
-
-        return AjaxResult.ok();
+        return viewSettings(model, appInstance.getInstanceId().toString(), origCompId);
     }
 
     /**
@@ -220,16 +160,18 @@ public class SampleAppController {
         }
     }
 
-    private String viewWidget(Model model, String sectionUrl, String target, Integer width, WixSignedInstance wixSignedInstance, String compId, String viewMode) throws IOException {
-        AppSettings appSettings = loadOrCreateAppInstance(wixSignedInstance, compId);
+    // Set widget.vm
+    private String viewWidget(Model model, String instanceId, String compId) throws IOException {
+        AppSettings appSettings = getSettings(instanceId, compId);
 
         model.addAttribute("settings", objectMapper.writeValueAsString(appSettings));
 
         return "widget";
     }
 
-    private String viewSettings(Model model, Integer width, WixSignedInstance wixSignedInstance, String locale, String origCompId, String compId) throws IOException {
-        AppSettings appSettings = loadOrCreateAppInstance(wixSignedInstance, origCompId);
+    // Set setting.vm
+    private String viewSettings(Model model, String instanceId, String origCompId) throws IOException {
+        AppSettings appSettings = getSettings(instanceId, origCompId);
 
         model.addAttribute("settings", objectMapper.writeValueAsString(appSettings));
 
@@ -237,31 +179,28 @@ public class SampleAppController {
     }
 
     /**
-     * the method loads the app settings, or creates a new app settings (new app instance) if the datastore does not
-     * include this instanceId
-     * @param wixSignedInstance - the unmarshaled signed instance
-     * @return loaded or new app settings
+     * Get settings from the DB if exists, otherwise return empty settings
+     * @param instanceId - the instance id
+     * @param compId - the app comp Id
+     * @return app settings
      */
-    private AppSettings loadOrCreateAppInstance(WixSignedInstance wixSignedInstance, String compId) {
-        AppSettings appSettings = sampleAppDao.getAppSettings(wixSignedInstance.getInstanceId(), compId);
+    private AppSettings getSettings(String instanceId, String compId) {
+        AppSettings appSettings = sampleAppDao.getAppSettings(instanceId, compId);
 
         if(appSettings == null) {
             appSettings = new AppSettings();
-            sampleAppDao.saveAppSettings(appSettings, wixSignedInstance.getInstanceId(), compId);
         }
         return appSettings;
     }
 
-    private WixSignedInstance createTestSignedInstance(String instanceId, @Nullable String userId, @Nullable String permissions) {
+    private AppInstance createTestAppInstance(String instanceId) throws RuntimeException {
         try {
             UUID instanceUuid = UUID.fromString(instanceId);
-            UUID userUuid = null;
-            if (userId != null)
-                userUuid = UUID.fromString(userId);
-            return new WixSignedInstance(instanceUuid, new DateTime(), userUuid, permissions);
+
+            return new AppInstance(instanceUuid);
         } catch (Exception original) {
-            throw new ContollerInputException("Failed parsing instanceId [%s] or userId [%s].\nValid values are GUIDs of the form [aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa] or nulls (for userId)",
-                    original, instanceId, userId);
+            throw new ContollerInputException("Failed parsing instanceId [%s].\nValid values are GUIDs of the form [aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa] or nulls (for userId)",
+                    original, instanceId);
         }
     }
 
