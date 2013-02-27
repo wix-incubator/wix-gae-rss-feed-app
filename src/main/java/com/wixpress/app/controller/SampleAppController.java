@@ -49,7 +49,7 @@ public class SampleAppController {
                          @RequestParam String instance,
                          @RequestParam String compId) throws IOException
     {
-        AppInstance appInstance = authenticationResolver.unsignInstance(instance);
+        AppInstance appInstance = authenticationResolver.unsignInstance(objectMapper, instance);
         return viewWidget(model, appInstance.getInstanceId().toString(), compId);
     }
 
@@ -66,7 +66,7 @@ public class SampleAppController {
                            HttpServletResponse response,
                            @RequestParam String instance,
                            @RequestParam String origCompId) throws IOException {
-        AppInstance appInstance = authenticationResolver.unsignInstance(instance);
+        AppInstance appInstance = authenticationResolver.unsignInstance(objectMapper, instance);
         response.addCookie(new Cookie("instance", instance));
         return viewSettings(model, appInstance.getInstanceId().toString(), origCompId);
     }
@@ -82,7 +82,7 @@ public class SampleAppController {
     public ResponseEntity<AjaxResult> settingsUpdate(@CookieValue() String instance,
                                    @RequestBody SettingsUpdate settingsUpdate) {
         try {
-            AppInstance appInstance = authenticationResolver.unsignInstance(instance);
+            AppInstance appInstance = authenticationResolver.unsignInstance(objectMapper, instance);
             sampleAppDao.updateAppSettings(appInstance.getInstanceId().toString(), settingsUpdate.getCompId(), settingsUpdate.getSettings());
             return AjaxResult.ok();
         }
@@ -188,7 +188,7 @@ public class SampleAppController {
         AppSettings appSettings = sampleAppDao.getAppSettings(instanceId, compId);
 
         if(appSettings == null) {
-            appSettings = new AppSettings();
+            appSettings = new AppSettings(objectMapper);
         }
         return appSettings;
     }

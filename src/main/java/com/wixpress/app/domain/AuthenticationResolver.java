@@ -55,16 +55,17 @@ public class AuthenticationResolver
 
     /**
      * Parse the signed instance
+     * @param objectMapper - handling Json object
      * @param signedInstance - The instance parameter that was created bty The Wix Platform
      *
      * @return AppInstance that represent the parse of the instance parameter
      */
-    public AppInstance unsignInstance(String signedInstance)
+    public AppInstance unsignInstance(ObjectMapper objectMapper, String signedInstance)
     {
-        return unmarshal(signedInstance, AppInstance.class);
+        return unmarshal(objectMapper, signedInstance, AppInstance.class);
     }
 
-    private <T> T unmarshal(String value, Class<T> valueClass)
+    private <T> T unmarshal(ObjectMapper objectMapper, String value, Class<T> valueClass)
     {
         // Split the signed-instance
         int idx = value.indexOf(".");
@@ -82,9 +83,6 @@ public class AuthenticationResolver
                 throw new InvalidSignatureException("Request signed-instance signature invalid. Are you using the right secret?");
             } else
             {
-                // ObjectMapper is a java library to covert JSON to java objects and vice-versa
-                ObjectMapper objectMapper = new ObjectMapper();
-
                 return objectMapper.readValue(payload, valueClass);
             }
         }
