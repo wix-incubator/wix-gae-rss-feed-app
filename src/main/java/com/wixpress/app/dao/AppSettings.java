@@ -15,10 +15,13 @@ import javax.annotation.Nullable;
 public class AppSettings {
 
     private @Nullable String feedInputUrl = "";
-    private ObjectMapper objectMapper = new ObjectMapper();
-    private @Nullable JsonNode styling = objectMapper.createObjectNode();;
+    private @Nullable JsonNode styling;
 
     public AppSettings() {}
+
+    public AppSettings(ObjectMapper objectMapper) {
+        styling = objectMapper.createObjectNode();
+    }
 
     public <T> T nvl(T value, T fallback) {
         return (value != null)?value:fallback;

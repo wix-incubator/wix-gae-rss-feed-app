@@ -63,10 +63,10 @@ public class SampleAppGaeDao implements SampleAppDao {
                 return objectMapper.readValue(baggage, AppSettings.class);
             } catch (EntityNotFoundException e) {
                 // we ignore the setting reading exception and return a new default settings object
-                return new AppSettings();
+                return new AppSettings(objectMapper);
             } catch (IOException e) {
                 // we ignore the setting reading exception and return a new default settings object
-                return new AppSettings();
+                return new AppSettings(objectMapper);
             }
         }
     }
