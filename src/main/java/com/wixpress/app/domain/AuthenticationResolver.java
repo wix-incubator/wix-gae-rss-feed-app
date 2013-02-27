@@ -25,11 +25,14 @@ public class AuthenticationResolver
     private final Base64 base64;
     private final Mac mac;
 
+    private final ObjectMapper objectMapper;
+
     /** AuthenticationResolver Constructor
      * Initialize the parse algorithm
      */
-    public AuthenticationResolver()
+    public AuthenticationResolver(ObjectMapper objectMapper)
     {
+        this.objectMapper = objectMapper;
         try
         {
             // initialization

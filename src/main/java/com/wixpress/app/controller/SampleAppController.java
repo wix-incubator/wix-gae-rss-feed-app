@@ -34,7 +34,8 @@ public class SampleAppController {
     @Resource
     private ObjectMapper objectMapper;
 
-    protected AuthenticationResolver authenticationResolver = new AuthenticationResolver();
+    @Resource
+    private AuthenticationResolver authenticationResolver;
 
     /**
      * VIEW - Widget Endpoint

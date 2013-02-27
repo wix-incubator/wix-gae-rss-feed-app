@@ -6,6 +6,7 @@ import com.wixpress.app.controller.HelpController;
 import com.wixpress.app.controller.SampleAppController;
 import com.wixpress.app.dao.SampleAppDao;
 import com.wixpress.app.dao.SampleAppGaeDao;
+import com.wixpress.app.domain.AuthenticationResolver;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +44,11 @@ public class EmbeddedAppConfig
     @Bean
     public DatastoreService dataStore() {
         return DatastoreServiceFactory.getDatastoreService();
+    }
+
+    @Bean
+    public AuthenticationResolver authenticationResolver() {
+        return new AuthenticationResolver(objectMapper());
     }
 
 }
