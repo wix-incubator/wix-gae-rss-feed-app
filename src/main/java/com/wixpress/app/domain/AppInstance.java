@@ -5,29 +5,25 @@ import org.joda.time.DateTime;
 import java.util.UUID;
 
 /**
- * Created by : doron
- * Since: 7/1/12
+ * This class represent the app instance properties
  */
 
-public class WixSignedInstance {
+public class AppInstance {
 
-    private UUID instanceId;
+    private UUID instanceId; // The instance ID of the app within Wix
     private DateTime signDate;
-    private UUID uid;
-    private String permissions;
+    private UUID uid; // The ID of the site-member that is currently logged in (optional)
+    private String permissions;// The permission set of the site member.
     private String ipAndPort;
-    private String vendorProductId;
+    private String vendorProductId; // Premium Package ID, as was entered in the Dev Center during the app registration process
     private Boolean demoMode;
 
     //Empty cont' for the ObjectMapper - don't delete
-    public WixSignedInstance() {
+    public AppInstance() {
     }
 
-    public WixSignedInstance(UUID instanceId, DateTime signDate, UUID uid, String permissions) {
+    public AppInstance(UUID instanceId) {
         this.instanceId = instanceId;
-        this.signDate = signDate;
-        this.uid = uid;
-        this.permissions = permissions;
     }
 
     public UUID getInstanceId() {

@@ -6,16 +6,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.UUID;
 
 /**
- * Created by : doron
- * Since: 8/27/12
+ * The DB wrapper of the app
+ * It implements methods for getting and setting data in the DB
  */
 
 public class SampleAppGaeDao implements SampleAppDao {
 
-    protected final static String SAMPLE_APP_INSTANCE = "AppSettings";
+    protected final static String SAMPLE_APP_INSTANCE = "RssFeedAppInstance";
     protected final static String BAGGAGE = "baggage";
 
     @Resource
@@ -23,7 +22,13 @@ public class SampleAppGaeDao implements SampleAppDao {
     @Resource
     private DatastoreService dataStore;
 
-    public AppSettings saveAppSettings(AppSettings appSettings, UUID instanceId, String compId) {
+    /**
+     * Save app settings in the DB
+     * @param instanceId - Instance id of the app, It is shared by multiple Widgets of the same app within the same site
+     * @param compId - The ID of the Wix component which is the host of the iFrame, it is used to distinguish between multiple instances of the same Widget in a site
+     * @param appSettings - The settings of the app that configure the widget
+     */
+    public void saveAppSettings(String instanceId, String compId, AppSettings appSettings) {
         Entity entity = new Entity(SAMPLE_APP_INSTANCE, key(instanceId, compId));
         try {
             entity.setProperty(BAGGAGE, objectMapper.writeValueAsString(appSettings));
@@ -40,10 +45,15 @@ public class SampleAppGaeDao implements SampleAppDao {
                 transaction.rollback();
             }
         }
-        return appSettings;
     }
 
-    public @Nullable AppSettings getAppSettings(UUID instanceId, String compId) {
+    /**
+     * Get app settings from the DB
+     * @param instanceId - Instance id of the app, It is shared by multiple Widgets of the same app within the same site
+     * @param compId - The ID of the Wix component which is the host of the iFrame, it is used to distinguish between multiple instances of the same Widget in a site
+     * @return
+     */
+    public @Nullable AppSettings getAppSettings(String instanceId, String compId) {
         if (instanceId == null)
             return null;
         else {
@@ -53,19 +63,31 @@ public class SampleAppGaeDao implements SampleAppDao {
                 return objectMapper.readValue(baggage, AppSettings.class);
             } catch (EntityNotFoundException e) {
                 // we ignore the setting reading exception and return a new default settings object
-                return new AppSettings();
+                return new AppSettings(objectMapper);
             } catch (IOException e) {
                 // we ignore the setting reading exception and return a new default settings object
-                return new AppSettings();
+                return new AppSettings(objectMapper);
             }
         }
     }
 
-    public String key(UUID instanceId, String compId) {
-        return String.format("%s.%s", instanceId.toString(), compId);
+    /**
+     * Create a unique key to each entry in the DB that is composed from the instanceId and compID
+     * @param instanceId - Instance id of the app, It is shared by multiple Widgets of the same app within the same site
+     * @param compId - The ID of the Wix component which is the host of the iFrame, it is used to distinguish between multiple instances of the same Widget in a site
+     * @return
+     */
+    public String key(String instanceId, String compId) {
+        return String.format("%s.%s", instanceId, compId);
     }
 
-    public void updateAppSettings(AppSettings appSettings, UUID instanceId, String compId) {
-        saveAppSettings(appSettings, instanceId, compId);
+    /**
+     * Update app settings in the DB
+     * @param instanceId - Instance id of the app, It is shared by multiple Widgets of the same app within the same site
+     * @param compId - The ID of the Wix component which is the host of the iFrame, it is used to distinguish between multiple instances of the same Widget in a site
+     * @param appSettings - The settings of the app that configure the widget
+     */
+    public void updateAppSettings(String instanceId, String compId, AppSettings appSettings) {
+        saveAppSettings(instanceId, compId, appSettings);
     }
 }
