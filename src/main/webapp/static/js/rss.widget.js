@@ -35,7 +35,7 @@ var _rssWidget = (function() {
         var feed = new google.feeds.Feed(rssModel.settings.feedInputUrl);
 
         // Set the number of feed entries that will be loaded by this feed
-        feed.setNumEntries(rssModel.settings.numOfEntries);
+        feed.setNumEntries(rssModel.settings.styling.numOfEntries);
 
         // Sets the result format
         feed.setResultFormat(google.feeds.Feed.JSON_FORMAT);
@@ -54,7 +54,7 @@ var _rssWidget = (function() {
      */
     function initFeedUrl(){
         if (!rssModel.settings.feedInputUrl || rssModel.settings.feedInputUrl == "") {
-            rssModel.settings.feedInputUrl = sp.defaultURL
+            rssModel.settings.feedInputUrl = sp.defaultURL;
         }
     }
 
@@ -91,7 +91,7 @@ var _rssWidget = (function() {
             $('#feedEntries').append(newFeed);
         }
 
-        $(".feed").css('color', rssModel.settings.textColor);
+        $(".feed").css('color', rssModel.settings.styling.textColor);
 
         // Remove the border from the last feed class element
         $(".feed:last").css('border-bottom', 'none');
@@ -125,20 +125,20 @@ var _rssWidget = (function() {
      * Apply settings on the widget elements
      */
     function applySettings() {
-        sp.title.css('color', rssModel.settings.titleTextColor);
+        sp.title.css('color', rssModel.settings.styling.titleTextColor);
 
         // Set widget background color - check if transparent is checked
-        var widgetBackgroundColor = rssModel.settings.widgetBcgColor;
-        if ( rssModel.settings.widgetBcgCB){
-            var opacityVal = rssModel.settings.widgetBcgSlider;
+        var widgetBackgroundColor = rssModel.settings.styling.widgetBcgColor;
+        if ( rssModel.settings.styling.widgetBcgCB){
+            var opacityVal = rssModel.settings.styling.widgetBcgSlider;
             widgetBackgroundColor = convertHexToRgba(widgetBackgroundColor, opacityVal);
         }
         sp.widgetBody.css('background-color', widgetBackgroundColor);
 
         // Set feed background color - check if transparent is checked
-        var feedBackgroundColor = rssModel.settings.feedBcgColor;
-        if ( rssModel.settings.feedBcgCB){
-            var opacityVal = rssModel.settings.feedBcgSlider;
+        var feedBackgroundColor = rssModel.settings.styling.feedBcgColor;
+        if ( rssModel.settings.styling.feedBcgCB){
+            var opacityVal = rssModel.settings.styling.feedBcgSlider;
             feedBackgroundColor = convertHexToRgba(feedBackgroundColor, opacityVal);
         }
         sp.feedElement.css('background-color', feedBackgroundColor);

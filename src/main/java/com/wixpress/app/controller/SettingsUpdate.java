@@ -3,8 +3,7 @@ package com.wixpress.app.controller;
 import com.wixpress.app.dao.AppSettings;
 
 /**
- * @author yoav
- * @since 2/17/13
+ * A container class for the request body
  */
 public class SettingsUpdate {
     private String compId;
