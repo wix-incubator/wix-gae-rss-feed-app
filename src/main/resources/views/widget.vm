@@ -2,7 +2,6 @@
 <html>
 <head>
     <link type="text/css" href="/static/css/rss.widget.css" rel="stylesheet">
-    <link type="text/css" href="/static/external_modules/scrollbar/css/jquery.tinyscrollbar.css" rel="stylesheet">
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 </head>
 <body>
@@ -33,7 +32,6 @@
 <script type="text/javascript" src="//sslstatic.wix.com/services/js-sdk/latest/js/Wix.js"></script>
 <script type="text/javascript" src="/static/js/handlebars.js"></script>
 <script type="text/javascript" src="/static/js/common.js"></script>
-<script type="text/javascript" src="/static/external_modules/scrollbar/js/jquery.tinyscrollbar.js"></script>
 <script type="text/javascript" src="/static/js/rss.widget.js"></script>
 </body>
 </html>

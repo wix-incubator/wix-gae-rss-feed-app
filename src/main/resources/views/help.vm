@@ -19,6 +19,7 @@
         <ul>
             <li><a href="http://dev.wix.com/">Wix Developers Center</a></li>
             <li><a href="http://kb.wixpress.com/display/html/Developing+a+widget+app+-+step+by+step+tutorial/">Developing a widget app - step by step tutorial</a></li>
+            <li><a href=https://github.com/wix/wix-ui-lib/>wix-ui-lib</a> - Starter Kit for Wix 3rd Party Apps</li>
             <li><a href=https://developers.google.com/appengine/>Google App Engine Documentation</a></li>
             <li><a href=https://appengine.google.com/>Google App Engine Dashboard</a></li>
             <li><a href=http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/mvc.html>Spring MVC documentation</a></li>
@@ -39,6 +40,10 @@ src                                  &rarr; The sources folder
    &#9492; resources                       &rarr; Managed Resources
      &#9492; views                         &rarr; Application Views - Velocity Templates
    &#9492; webapp                          &rarr; Root of the WAR archive
+     &#9492; static                        &rarr; Client side files
+       &#9492; css                         &rarr; Style sheet files
+       &#9492; js                          &rarr; Java script files
+       &#9492; wix-ui-lib                  &rarr; Wix ui lib
      &#9492; WEB-INF                       &rarr; WAR deployment descriptors folder
        &#9492; appengine-web.xml           &rarr; App Engine configuration
        &#9492; mvc-dispatcher-servlet.xml  &rarr; Spring MVC configuration
