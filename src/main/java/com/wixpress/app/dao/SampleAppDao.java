@@ -1,7 +1,7 @@
 package com.wixpress.app.dao;
 
 /**
- * Dat store wrapper
+ * Data store wrapper
  * It implements methods for getting and setting data in the data store
  */
 
@@ -19,7 +19,7 @@ public interface SampleAppDao {
      * Get app settings from the data store
      * @param instanceId - Instance id of the app, It is shared by multiple Widgets of the same app within the same site
      * @param compId - The ID of the Wix component which is the host of the iFrame, it is used to distinguish between multiple instances of the same Widget in a site
-     * @return
+     * @return appSettings - The settings of the app that configure the widget
      */
     public AppSettings getAppSettings(String instanceId, String compId);
 

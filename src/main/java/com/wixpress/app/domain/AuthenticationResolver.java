@@ -18,8 +18,8 @@ import java.util.Arrays;
 public class AuthenticationResolver
 {
     // Constants for app key and app secret key  - should be changed once you register your application with Wix Dev center (http://dev.wix.com/app/create-app)
-    private final static String APPLICATION_KEY = "12e1cbb7-5e24-fe10-c03c-7df38acfd547";
-    private final static String APPLICATION_SECRET_KEY = "e62c5c90-7afe-450a-be27-f56c6cb1b148";
+    private final static String APPLICATION_KEY = "12d96f52-091d-56de-82ec-51cd5b3c7bbd";
+    private final static String APPLICATION_SECRET_KEY = "fb3ff493-298d-45ad-9f14-bf190546d138";
 
     private static final String SIGN_ALGORITHM = "HMACSHA256";
     private final Base64 base64;
@@ -58,17 +58,16 @@ public class AuthenticationResolver
 
     /**
      * Parse the signed instance
-     * @param objectMapper - handling Json object
      * @param signedInstance - The instance parameter that was created bty The Wix Platform
      *
      * @return AppInstance that represent the parse of the instance parameter
      */
-    public AppInstance unsignInstance(ObjectMapper objectMapper, String signedInstance)
+    public AppInstance unsignInstance(String signedInstance)
     {
-        return unmarshal(objectMapper, signedInstance, AppInstance.class);
+        return unmarshal(signedInstance, AppInstance.class);
     }
 
-    private <T> T unmarshal(ObjectMapper objectMapper, String value, Class<T> valueClass)
+    private <T> T unmarshal(String value, Class<T> valueClass)
     {
         // Split the signed-instance
         int idx = value.indexOf(".");
