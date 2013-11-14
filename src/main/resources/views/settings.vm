@@ -80,12 +80,6 @@
 
 <script type="text/javascript">
     var newSettings = ${settings};
-
-    $(document).ready(function () {
-
-        Wix.UI.initialize({});
-
-    });
 </script>
 
 </body>
