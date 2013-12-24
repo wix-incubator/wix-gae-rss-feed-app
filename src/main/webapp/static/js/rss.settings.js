@@ -194,6 +194,28 @@ function updateStylingProperty(key, value) {
 }
 
 /**
+ * Get a parameter from the url
+ * @param parameterName
+ * @return {*|null}
+ */
+function getQueryParameter(parameterName) {
+    var url = window.document.URL.toString();
+
+    var index = url.indexOf('?');
+
+    var queryString = url.substring(index + 1, url.length-1);
+
+    var queryArray = queryString.split('&');
+    var queryMap = {};
+    queryArray.forEach(function(element) {
+        var parts = element.split('=');
+        queryMap[parts[0]] = decodeURIComponent(parts[1]);
+    });
+
+    return queryMap[parameterName] || null;
+}
+
+/**
  * Updating the settings object in the DB by posting an ajax request
  * @param settingsJson
  */
@@ -202,7 +224,7 @@ function updateSettings(settingsJson) {
 
     $.ajax({
         'type': 'post',
-        'url': "/app/settingsupdate",
+        'url': "/app/settingsupdate?instance=" + getQueryParameter('instance'),
         'dataType': "json",
         'contentType': 'application/json; chatset=UTF-8',
         'data': JSON.stringify({compId: Wix.Utils.getOrigCompId(), settings: settingsJson}),
