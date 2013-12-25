@@ -64,24 +64,22 @@ public class SampleAppController {
      */
     @RequestMapping(value = "/settings", method = RequestMethod.GET)
     public String settings(Model model,
-                           HttpServletResponse response,
                            @RequestParam String instance,
                            @RequestParam String origCompId) throws IOException {
         AppInstance appInstance = authenticationResolver.unsignInstance(instance);
-        response.addCookie(new Cookie("instance", instance));
         return viewSettings(model, appInstance.getInstanceId().toString(), origCompId);
     }
 
     /**
      * Saves changes from the settings dialog
-     * @param instance - the app instance, read from a cookie placed by the settings controller view operations
+     * @param instance - The signed instance {@see http://dev.wix.com/display/wixdevelopersapi/The+Signed+Instance}
      * @param settingsUpdate - the new settings selected by the user and the widgetId
      * @return AjaxResult written directly to the response stream
      */
     @RequestMapping(value = "/settingsupdate", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<AjaxResult> settingsUpdate(@CookieValue() String instance,
-                                   @RequestBody SettingsUpdate settingsUpdate) {
+    public ResponseEntity<AjaxResult> settingsUpdate(@RequestParam String instance,
+                                                     @RequestBody SettingsUpdate settingsUpdate) {
         try {
             AppInstance appInstance = authenticationResolver.unsignInstance(instance);
             sampleAppDao.updateAppSettings(appInstance.getInstanceId().toString(), settingsUpdate.getCompId(), settingsUpdate.getSettings());
