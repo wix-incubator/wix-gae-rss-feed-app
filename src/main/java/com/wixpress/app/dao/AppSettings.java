@@ -15,6 +15,7 @@ import javax.annotation.Nullable;
 public class AppSettings {
 
     private @Nullable String feedInputUrl = "";
+    private int numOfEntries = 4;
     private @Nullable JsonNode styling;
 
     public AppSettings() {}
@@ -43,6 +44,14 @@ public class AppSettings {
 
     public void setFeedInputUrl(@Nullable String feedInputUrl) {
         this.feedInputUrl = feedInputUrl;
+    }
+
+    public int getNumOfEntries() {
+        return numOfEntries;
+    }
+
+    public void setNumOfEntries(int numOfEntries) {
+        this.numOfEntries = numOfEntries;
     }
 }
 

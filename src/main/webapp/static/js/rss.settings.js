@@ -3,7 +3,7 @@
  * Init the input  with a start value, a one that was saved in the DB or a default one
  */
 function initInputElms() {
-    $('#numOfEntries').val(rssModel.settings.styling.numOfEntries);
+    $('#numOfEntries').val(rssModel.settings.numOfEntries);
 }
 
 /**
@@ -37,7 +37,7 @@ function bindEvents () {
     });
 	
     $numOfEntriesInput.change( function(){
-        updateStylingProperty($numOfEntriesInput.attr("id"), $numOfEntriesInput.val());
+        updateSettingsProperty($numOfEntriesInput.attr("id"), $numOfEntriesInput.val());
     });
 }
 
@@ -99,16 +99,6 @@ function updateSettingsProperty(key, value) {
 }
 
 /**
- * Update a styling property in the settings object and update the settings object in the db by posting an ajax request
- * @param key - in the settings object
- * @param value - the new value
- */
-function updateStylingProperty(key, value) {
-    rssModel.settings.styling[key] = value;
-    updateSettings(rssModel.settings);
-}
-
-/**
  * Get a parameter from the url
  * @param parameterName
  * @return {*|null}
@@ -160,7 +150,7 @@ function applySettings() {
     // RSS feed link
     rssModel.settings.feedInputUrl = rssModel.settings.feedInputUrl || "";
     // Number of entries in the RSS feed
-    rssModel.settings.styling.numOfEntries = rssModel.settings.styling.numOfEntries || 4;
+    rssModel.settings.numOfEntries = rssModel.settings.numOfEntries || 4;
 }
 
 
